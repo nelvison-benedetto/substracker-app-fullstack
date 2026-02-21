@@ -42,16 +42,16 @@ public class UserRepository : IUserRepository
     }
 
     //AGGREGATES  //TO SET CORRECT SOLO DOPO CHE FACCIO I CRUD DI BASE X ALL
-    public async Task<UserAggregate?> GetAggregateAsync(UserId id)
-    {
-        var entity = await _context.Users
-            .Include(u => u.Subscription)  //ok! gli aggregate vanno caricati insieme!
-            .Include(u => u.SharedLink)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.UserId == id.Value);
+    //public async Task<UserAggregate?> GetAggregateAsync(UserId id)
+    //{
+    //    var entity = await _context.Users
+    //        .Include(u => u.Subscription)  //ok! gli aggregate vanno caricati insieme!
+    //        .Include(u => u.SharedLink)
+    //        .AsNoTracking()
+    //        .FirstOrDefaultAsync(u => u.UserId == id.Value);
 
-        return entity is null ? null : UserAggregateMapper.ToDomain(entity);
-    }
+    //    return entity is null ? null : UserAggregateMapper.ToDomain(entity);
+    //}
 
     //COMMANDS
     public Task AddAsync(User user)  //Repository + SaveChanges (DDD puro)

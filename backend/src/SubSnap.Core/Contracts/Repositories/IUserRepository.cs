@@ -15,9 +15,11 @@ public interface IUserRepository
     Task<User?> GetByIdAsync(UserId id);  //validazione tramite type UserId
     Task<User?> GetByEmailAsync(Email email);
 
-    //AGGREGATES
-    Task<UserAggregate?> GetAggregateAsync(UserId id);
-
     //COMMANDS
     Task AddAsync(User user);
+
+    //AGGREGATES
+    //Task<UserAggregate?> GetAggregateAsync(UserId id);
+
+
 }
