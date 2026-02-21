@@ -18,5 +18,7 @@ public sealed class EFUnitOfWork : IUnitOfWork
     }
 
     public async Task SaveChangesAsync(CancellationToken ct = default)
-        => _context.SaveChangesAsync(ct);
+    { 
+        await _context.SaveChangesAsync(ct);
+    }
 }
