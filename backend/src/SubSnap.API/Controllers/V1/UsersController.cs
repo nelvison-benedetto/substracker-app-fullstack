@@ -11,7 +11,7 @@ using SubSnap.Core.DTOs.External.Responses.Users;
 namespace SubSnap.API.Controllers.V1;
 
 [ApiController]
-[Route("api/users")]
+[Route("api/v1/users")]
 public class UsersController : ControllerBase
 {
     private readonly IMapper _mapper;
