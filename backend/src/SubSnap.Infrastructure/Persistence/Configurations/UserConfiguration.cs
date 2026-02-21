@@ -51,17 +51,17 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.CreatedAt)
             .HasColumnName("createdat")
-            .HasColumnType("timestamp(3) without time zone")
+            .HasColumnType("timestamptz(3)")  //w timezone
             .IsRequired();
 
         builder.Property(x => x.UpdatedAt)
             .HasColumnName("updatedat")
-            .HasColumnType("timestamp(3) without time zone")
+            .HasColumnType("timestamptz(3)")
             .IsRequired();
 
         builder.Property(x => x.LastLogin)
             .HasColumnName("lastlogin")
-            .HasColumnType("timestamp(3) without time zone");
+            .HasColumnType("timestamptz(3)");
 
         builder.Ignore(x => x.RefreshTokens);
     }
