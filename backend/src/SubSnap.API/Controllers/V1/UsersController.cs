@@ -29,21 +29,16 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(ApiResult<UserResponse>), StatusCodes.Status200OK)] //questi servono agli sviluppatori per capire / OpenAPI / Swagger x status code http x this method.
     [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ApiResult<UserResponse>>> Register(
-        RegisterUserRequest request)
+    public async Task<ActionResult<ApiResult<UserResponse>>> Register( RegisterUserRequest request )
     {
         // Request -> Command mapping
         var command = _mapper.Map<RegisterUserCommand>(request);
-
         // Validazione centralizzata
         await ValidatorHelper.ValidateCommandAsync(_validator, command);
-
         // Application Layer
         var result = await _userService.RegisterAsync(command);
-
         // Result -> Response
         var response = _mapper.Map<UserResponse>(result);
-
         return Ok(ApiResult<UserResponse>.Ok(response));
         //qualsiasi cosa tu metta dentro Ok(...) verrà serializzata in JSON come body della risposta HTTP
         //ApiResult<T>.Ok(data)  my custom envelope standard per tutte le risposte

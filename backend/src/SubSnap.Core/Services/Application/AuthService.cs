@@ -55,8 +55,7 @@ public class AuthService
         await _uow.SaveChangesAsync();
     }
 
-    public async Task<(string access, string refresh)>
-    RefreshAsync(string refreshToken)
+    public async Task<(string access, string refresh)> RefreshAsync(string refreshToken)
     {
         // 1️⃣ trova utente con token attivo
         var user = await _userRepository.GetByRefreshTokenAsync(refreshToken)
