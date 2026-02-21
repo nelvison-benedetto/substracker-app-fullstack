@@ -39,8 +39,9 @@ public class AuthService
 
         var accessToken = _jwtTokenService.GenerateAccessToken(user);
         var refreshToken = _jwtTokenService.GenerateRefreshToken();
-
-        user.AddRefreshToken(refreshToken, DateTime.UtcNow.AddDays(30));
+        var hashed = _passwordHasherService.Hash(refreshToken);
+        var expiry = DateTime.UtcNow.AddDays(30);
+        user.AddRefreshToken(hashed.ToString(), expiry);
         await _uow.SaveChangesAsync();
         return (accessToken, refreshToken);
     }

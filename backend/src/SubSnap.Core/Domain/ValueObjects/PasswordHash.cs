@@ -16,4 +16,5 @@ public readonly struct PasswordHash  //è readonly struct
 
         Value = value;
     }
+    public override string ToString() => Value.ToString();
 }
