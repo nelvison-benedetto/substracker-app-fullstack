@@ -1,4 +1,5 @@
-﻿using SubSnap.Core.Domain.ValueObjects;
+﻿using SubSnap.Core.Abstractions.Identity;
+using SubSnap.Core.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,12 +65,22 @@ public class User
     {
         _refreshTokens.Add(new RefreshToken(token, expiresAt));
     }
-    public void RevokeRefreshToken(string token)
+    public RefreshToken? FindActiveRefreshToken(
+    string providedToken, IPasswordHasherService hasher)
     {
-        var rt = _refreshTokens.SingleOrDefault(x => x.Token == token);
-        if (rt is null || !rt.IsActive())
+        return _refreshTokens
+            .FirstOrDefault(rt =>
+                rt.IsActive() &&
+                hasher.Verify(
+                    providedToken,
+                    new PasswordHash(rt.Token)));
+    }
+    public void RevokeRefreshToken(RefreshToken token)
+    {
+        if (!token.IsActive())
             throw new InvalidOperationException("Invalid refresh token");
-        rt.Revoke();
+
+        token.Revoke();
     }
 
 }

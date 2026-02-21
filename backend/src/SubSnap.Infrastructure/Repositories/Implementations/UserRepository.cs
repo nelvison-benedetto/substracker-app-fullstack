@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SubSnap.Core.Abstractions.Identity;
 using SubSnap.Core.Contracts.Repositories;
 using SubSnap.Core.Domain.Aggregates;
 using SubSnap.Core.Domain.Entities;
@@ -19,9 +20,11 @@ namespace SubSnap.Infrastructure.Repositories.Implementations;
 public class UserRepository : IUserRepository
 {
     private readonly ApplicationDbContext _context;
-    public UserRepository(ApplicationDbContext context)
+    private readonly IPasswordHasherService _passwordHasherService;
+    public UserRepository(ApplicationDbContext context, IPasswordHasherService passwordHasherService)
     {
         _context = context;
+        _passwordHasherService = passwordHasherService;
     }
 
     public async Task<Core.Domain.Entities.User?> GetByIdAsync(UserId id)  //Task<User?> because it can return null, return type is domain User
@@ -40,6 +43,13 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync(x => x.Email == email);
         //return entity is null ? null : UserMapper.ToDomain(entity);
     }
+
+    public async Task<User?> GetByRefreshTokenAsync(string refreshToken)
+    {
+        var users = await _context.Users.Include(u => u.RefreshTokens).ToListAsync();
+        return users.FirstOrDefault(u => u.RefreshTokens.Any(rt => _passwordHasherService.Verify(refreshToken, new PasswordHash(rt.Token))));
+    }
+
 
     //AGGREGATES  //TO SET CORRECT SOLO DOPO CHE FACCIO I CRUD DI BASE X ALL
     //public async Task<UserAggregate?> GetAggregateAsync(UserId id)

@@ -14,6 +14,7 @@ public interface IUserRepository
     //entity singola
     Task<User?> GetByIdAsync(UserId id);  //validazione tramite type UserId
     Task<User?> GetByEmailAsync(Email email);
+    Task<User?> GetByRefreshTokenAsync(string refreshToken);
 
     //COMMANDS
     Task AddAsync(User user);

@@ -46,16 +46,13 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
-    [Authorize]
-    [HttpDeletePost("refresh")]
-    public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequestAuth request)
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(
+    [FromBody] RefreshTokenRequestAuth request)
     {
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
-            ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-        if (userIdClaim is null)
-            return Unauthorized();
-        var email = new Email(User.FindFirstValue(ClaimTypes.Email) ?? throw new Exception("Email claim missing"));
-        var (access, refresh) = await _authService.LoginAsync(email, request.Password);
+        var (access, refresh) =
+            await _authService.RefreshAsync(request.RefreshToken);
+
         return Ok(ApiResult<object>.Ok(new
         {
             accessToken = access,

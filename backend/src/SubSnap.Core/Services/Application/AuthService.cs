@@ -38,23 +38,47 @@ public class AuthService
             throw new UnauthorizedAccessException();
 
         var accessToken = _jwtTokenService.GenerateAccessToken(user);
-        var refreshToken = _jwtTokenService.GenerateRefreshToken();
-        var hashed = _passwordHasherService.Hash(refreshToken);
+        var refreshRaw = _jwtTokenService.GenerateRefreshToken();
+        var refreshHash = _passwordHasherService.Hash(refreshRaw);
         var expiry = DateTime.UtcNow.AddDays(30);
-        user.AddRefreshToken(hashed.ToString(), expiry);
+        user.AddRefreshToken(refreshHash.Value, expiry);
         await _uow.SaveChangesAsync();
-        return (accessToken, refreshToken);
+        return (accessToken, refreshRaw);
     }
     public async Task LogoutAsync(UserId userId, string refreshToken)
     {
         var user = await _userRepository.GetByIdAsync(userId)
-            ?? throw new Exception("User not found");
-        user.RevokeRefreshToken(refreshToken);
+            ?? throw new UnauthorizedAccessException();
+        var token = user.FindActiveRefreshToken(refreshToken,_passwordHasherService)
+            ?? throw new UnauthorizedAccessException();
+        user.RevokeRefreshToken(token);
         await _uow.SaveChangesAsync();
     }
 
-    public async Task<(string access, string refresh)> RefreshAsync(string refreshToken)
+    public async Task<(string access, string refresh)>
+    RefreshAsync(string refreshToken)
     {
-        
+        // 1️⃣ trova utente con token attivo
+        var user = await _userRepository.GetByRefreshTokenAsync(refreshToken)
+            ?? throw new UnauthorizedAccessException();
+        // 2️⃣ trova token domain
+        var token = user.FindActiveRefreshToken(
+            refreshToken,
+            _passwordHasherService)
+            ?? throw new UnauthorizedAccessException();
+        // 3️⃣ revoke old token (ROTATION)
+        user.RevokeRefreshToken(token);
+        // 4️⃣ crea nuovi token
+        var newAccess = _jwtTokenService.GenerateAccessToken(user);
+
+        var newRefreshRaw = _jwtTokenService.GenerateRefreshToken();
+        var newRefreshHash = _passwordHasherService.Hash(newRefreshRaw);
+
+        user.AddRefreshToken(
+            newRefreshHash.Value,
+            DateTime.UtcNow.AddDays(30));
+
+        await _uow.SaveChangesAsync();
+        return (newAccess, newRefreshRaw);
     }
 }
