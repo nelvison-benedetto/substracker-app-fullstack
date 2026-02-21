@@ -26,22 +26,22 @@ public class UserRepository : IUserRepository
 
     public async Task<Core.Domain.Entities.User?> GetByIdAsync(UserId id)  //Task<User?> because it can return null, return type is domain User
     {
-        var entity = await _context.Users
+        return await _context.Users
             .AsNoTracking()  //NO TRACKING xk ef non deve tracciare nulla, EF here è sol x data reading.
             .FirstOrDefaultAsync(x => x.Id == id);
         //ora entity è di type 'Infrastructure.Persistence.Scaffold.User?'
-        return entity is null ? null : UserMapper.ToDomain(entity);  //mapping entity found to domain!!CLEAN ARCHITECTURE
+        //return entity is null ? null : UserMapper.ToDomain(entity);  //mapping entity found to domain!!CLEAN ARCHITECTURE
     }
 
     public async Task<User?> GetByEmailAsync(Email email)
     {
-        var entity = await _context.Users
+        return await _context.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email == email);
-        return entity is null ? null : UserMapper.ToDomain(entity);
+        //return entity is null ? null : UserMapper.ToDomain(entity);
     }
 
-    //AGGREGATES
+    //AGGREGATES  //TO SET CORRECT SOLO DOPO CHE FACCIO I CRUD DI BASE X ALL
     public async Task<UserAggregate?> GetAggregateAsync(UserId id)
     {
         var entity = await _context.Users
