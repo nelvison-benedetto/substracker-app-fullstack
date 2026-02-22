@@ -6,11 +6,6 @@ using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.ValueObjects;
 //using SubSnap.Infrastructure.Mapping;
 using SubSnap.Infrastructure.Persistence.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SubSnap.Infrastructure.Repositories.Implementations;
 
@@ -67,7 +62,6 @@ public class UserRepository : IUserRepository
                 u => u.Id == EF.Property<UserId>(token, "UserId"),
                 ct);
     }
-
 
     //---COMMANDS---
     public Task AddAsync(User user, CancellationToken ct)  //Repository + SaveChanges (DDD puro)

@@ -22,9 +22,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         _factory = factory;
     }
 
-    public async Task<UserSubscriptionsAggregate?> LoadWithSubscriptions(
-        UserId userId,
-        CancellationToken ct = default)
+    public async Task<UserSubscriptionsAggregate?> LoadWithSubscriptions( UserId userId, CancellationToken ct = default)
     {
         // context #1 → user
         await using var userContext =
@@ -47,9 +45,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         return new UserSubscriptionsAggregate( user, subscriptionsTask.Result);
     }
 
-    private async Task<List<Subscription>> LoadSubscriptions(
-        UserId userId,
-        CancellationToken ct)
+    private async Task<List<Subscription>> LoadSubscriptions( UserId userId, CancellationToken ct)
     {
         await using var context =
             await _factory.CreateDbContextAsync(ct);
