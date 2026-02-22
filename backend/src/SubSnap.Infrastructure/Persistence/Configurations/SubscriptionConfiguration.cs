@@ -24,12 +24,11 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
                 id => id.Value,
                 value => new SubscriptionId(value))
             .HasColumnType("uuid")
-            .ValueGeneratedNever(); // ✅ IMPORTANTISSIMO, dice a EF di non aspettarsi che il db generei l'id(xk lo genero io nel Domain)
+            .ValueGeneratedNever(); //!!, dice a EF di non aspettarsi che il db generei l'id(xk lo genero io nel Domain)
 
-        // shadow FK (domain non la conosce)
-        builder.Property<Guid>("UserId")
+        builder.Property<Guid>("UserId")  //SHADOW FK (domain non la conosce), esiste solo dentro EF non dentro le classi c#!! fk verso User
             .HasColumnName("userid")
-            .IsRequired();
+            .IsRequired();  
 
         builder.Property(x => x.Name)
             .HasColumnName("name")
@@ -57,7 +56,7 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
             .HasColumnName("category")
             .HasMaxLength(50);
 
-        // ✅ relazione senza navigation property
+        //x relazione User->Subscription ma senza navigation property(che è un problema xk non è loosing)!!
         builder
             .HasOne<User>()
             .WithMany()

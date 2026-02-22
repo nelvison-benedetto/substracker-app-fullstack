@@ -17,15 +17,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.ToTable("users");
 
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => x.Id); //dici quale è la pk
 
         builder.Property(x => x.Id)
             .HasColumnName("id")  //nome ESATTAMENTE UGUALE a quello sul db!! oppure install plugin EFCore.'NamingConventions' che auto fa e.g.RefreshTokens -> refresh_tokens(x il db)
             .HasConversion(
-                id => id.Value,
-                value => new UserId(value))
+                id => id.Value,  //quando save allora prendi il value
+                value => new UserId(value))  //quando invece Load allora crea nuovo type 
             .HasColumnType("uuid")
-            .ValueGeneratedNever();
+            .ValueGeneratedNever();  //cosi EF sa di non aspettarsi che il db generi l'id(xk lo genero io nel Domain)!
 
         builder.Property(x => x.Email)
             .HasColumnName("email")
@@ -51,7 +51,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.CreatedAt)
             .HasColumnName("createdat")
-            .HasColumnType("timestamptz(3)")  //w timezone
+            .HasColumnType("timestamptz(3)")  //w timezone!
             .IsRequired();
 
         builder.Property(x => x.UpdatedAt)
@@ -63,12 +63,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("lastlogin")
             .HasColumnType("timestamptz(3)");
 
-        builder.Ignore(x => x.RefreshTokens);
+        builder.Ignore(x => x.RefreshTokens);  //ignore i refeshtokens, xk nel domain ho public IReadOnlyCollection<RefreshToken> RefreshTokens ma EF deve usare la lista privata! 
 
         builder
             .HasMany<RefreshToken>("_refreshTokens")  //collection privata di User → aggregate root gestisce i figli
             .WithOne()  //ogni refresh token ha un solo user
-            .HasForeignKey("UserId")  //la FK è la shadow property creata sopra
+            .HasForeignKey("UserId")  //la FK è la shadow property
             .IsRequired()  //un token non può esistere senza user
             .OnDelete(DeleteBehavior.Cascade);  //se elimini user, cancelli tutti i suoi refresh token
 

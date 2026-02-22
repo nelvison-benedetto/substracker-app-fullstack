@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SubSnap.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,9 +38,9 @@ public class RefreshTokenConfiguration
             .HasColumnName("isrevoked")
             .IsRequired();
 
-        // FK verso User
+        //FK verso User
         builder.Property<Guid>("UserId")
-            .HasColumnName("userid");  //crea shadow property per la collezione di RefreshToken, non mappata direttamente sulla classe User
+            .HasColumnName("userid"); //SHADOW FK (domain non la conosce), esiste solo dentro EF non dentro le classi c#!!
         builder.HasIndex("UserId");
         builder.HasIndex(x => x.Token)
             .IsUnique();  //ogni refresh token deve essere univoco nel DB

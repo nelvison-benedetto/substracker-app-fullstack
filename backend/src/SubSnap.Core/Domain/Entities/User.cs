@@ -13,7 +13,7 @@ namespace SubSnap.Core.Domain.Entities;
 public class User
 {
     private readonly List<RefreshToken> _refreshTokens = new();
-
+    
     public UserId Id { get; private set; }  //type other obj (readonly struct)(./ValueObjects/), COSI FAI LA VALIDAZIONE
         //nullable. verrà creato da DB. nessuns 'private setter' sull'id, domain puro
     public Email Email { get; private set; }   //type other obj  (readonly struct)(./ValueObjects/)
