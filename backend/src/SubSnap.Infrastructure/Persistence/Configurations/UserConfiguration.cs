@@ -64,6 +64,13 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnType("timestamptz(3)");
 
         builder.Ignore(x => x.RefreshTokens);
+
+        builder
+            .HasMany<RefreshToken>("_refreshTokens")
+            .WithOne()
+            .HasForeignKey("UserId")
+            .IsRequired()
+    .       OnDelete(DeleteBehavior.Cascade);
     }
 }
 
