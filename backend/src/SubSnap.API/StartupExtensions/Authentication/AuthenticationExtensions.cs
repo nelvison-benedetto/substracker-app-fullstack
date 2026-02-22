@@ -32,11 +32,13 @@ public static class AuthenticationExtensions
                     ValidateAudience = true,  //activate
                     ValidateLifetime = true,  //non deve essere un token scaduto
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtSettings["Issuer"], //devono combaciare perfettamente
-                    ValidAudience = jwtSettings["Audience"], //devono combaciare perfettamente
+                    ValidIssuer = issuer, //jwtSettings["Issuer"], //devono combaciare perfettamente
+                    ValidAudience = audience, //jwtSettings["Audience"], //devono combaciare perfettamente
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(secretKey))
-                        //key simmetrica, deve essere la stessa usata quando generi il token
+                        Encoding.UTF8.GetBytes(secretKey)),
+                    //key simmetrica, deve essere la stessa usata quando generi il token
+                    ClockSkew = TimeSpan.Zero, //xk di default asp.net ha margine di tolleranza 5 min, ma noi vogliamo che anche 1 sec dopo la scadenza token sia scaduto!
+                    ValidateTokenReplay = false //!! future-ready,  xk ORA NON HO ANCORA blacklist access token
                 };
             });
         return services;
