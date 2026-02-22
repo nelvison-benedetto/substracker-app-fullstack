@@ -39,11 +39,9 @@ public class RefreshTokenConfiguration
 
         // FK verso User
         builder.Property<Guid>("UserId")
-            .HasColumnName("userid");
-
+            .HasColumnName("userid");  //crea shadow property per la collezione di RefreshToken, non mappata direttamente sulla classe User
         builder.HasIndex("UserId");
-
         builder.HasIndex(x => x.Token)
-            .IsUnique();
+            .IsUnique();  //ogni refresh token deve essere univoco nel DB
     }
 }

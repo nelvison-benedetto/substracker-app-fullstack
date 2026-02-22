@@ -1,13 +1,34 @@
-﻿//using SubSnap.Core.Domain.Entities;
-//using SubSnap.Core.Domain.ValueObjects;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using SubSnap.Core.Domain.Entities;
+using SubSnap.Core.Domain.ValueObjects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-//namespace SubSnap.Infrastructure.Mapping;
+namespace SubSnap.Infrastructure.Mapping;
 
+//x DOMAIN-FIRST approach
+public sealed class UserAggregate
+{
+    public User User { get; }
+    public IReadOnlyCollection<Subscription> Subscriptions { get; }
+    public IReadOnlyCollection<SharedLink> SharedLinks { get; }
+    public UserAggregate(
+        User user,
+        IEnumerable<Subscription> subscriptions,
+        IEnumerable<SharedLink> sharedLinks)
+    {
+        User = user ?? throw new ArgumentNullException(nameof(user));
+        Subscriptions = subscriptions?.ToList().AsReadOnly()
+            ?? throw new ArgumentNullException(nameof(subscriptions));
+        SharedLinks = sharedLinks?.ToList().AsReadOnly()
+            ?? throw new ArgumentNullException(nameof(sharedLinks));
+    }
+}
+
+
+//OLD APPROACH
 //public static class SubscriptionMapper
 //{
 //    // DB -> Domain

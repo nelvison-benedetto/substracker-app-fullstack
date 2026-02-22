@@ -66,11 +66,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Ignore(x => x.RefreshTokens);
 
         builder
-            .HasMany<RefreshToken>("_refreshTokens")
-            .WithOne()
-            .HasForeignKey("UserId")
-            .IsRequired()
-    .       OnDelete(DeleteBehavior.Cascade);
+            .HasMany<RefreshToken>("_refreshTokens")  //collection privata di User → aggregate root gestisce i figli
+            .WithOne()  //ogni refresh token ha un solo user
+            .HasForeignKey("UserId")  //la FK è la shadow property creata sopra
+            .IsRequired()  //un token non può esistere senza user
+            .OnDelete(DeleteBehavior.Cascade);  //se elimini user, cancelli tutti i suoi refresh token
+
     }
 }
 

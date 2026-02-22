@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Core.Domain.Aggregates;
 
+//x DOMAIN-FIRST approach
 //questo è il 'VERO' User completo(w list Subscriptions e list SharedLinks). NON sempre caricato, solo quando serve
 public sealed class UserAggregate
 {
@@ -30,6 +31,8 @@ public sealed class UserAggregate
 /*
 esempio di come fai ad ottenere i dati aggregati correttamente
 //cmnq caricare user+tutti i suoi dati collegati si usa il 20% delle volte, la maggiorparte delle volte ti serve solo ottenere l'User senza i suoi dati collegati.
+
+//OLD APPROACH
  nel repository
 public async Task<UserAggregate?> GetAggregateAsync(UserId id)
 {
