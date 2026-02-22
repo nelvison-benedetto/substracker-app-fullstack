@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SubSnap.Core.Contracts.Queries;
 using SubSnap.Core.Domain.Aggregates;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.ValueObjects;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Infrastructure.DataLoaders;
 
-public class UserAggregateLoader
+public sealed class UserAggregateLoader : IUserAggregateLoader
 {
     private readonly IDbContextFactory<ApplicationDbContext> _factory;
 

@@ -2,10 +2,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SubSnap.Core.Abstractions.Identity;
+using SubSnap.Core.Contracts.Queries;
 using SubSnap.Core.Contracts.Repositories;
 using SubSnap.Core.Contracts.Services;
 using SubSnap.Core.Contracts.UnitOfWork;
 using SubSnap.Core.Services.Application;
+using SubSnap.Infrastructure.DataLoaders;
 using SubSnap.Infrastructure.Identity.Services;
 using SubSnap.Infrastructure.Persistence.Context;
 using SubSnap.Infrastructure.Persistence.UnitOfWork;
@@ -32,6 +34,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPasswordHasherService, AspNetPasswordHasherService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<AuthService>(); //non serve interfaccia x utilizzarlo xk non attravera i BOUNDARIES, è un servizio che rimane interno a .Infrastructure, non lo chiama nessun altro prj.
+        services.AddScoped<IUserAggregateLoader, UserAggregateLoader>();
 
         return services;
         //scoped: una nuova istanza per ogni richiesta HTTP, condivisa all’interno della stessa richiesta. Perfetto x DbContext e servizi che lavorano con esso.
