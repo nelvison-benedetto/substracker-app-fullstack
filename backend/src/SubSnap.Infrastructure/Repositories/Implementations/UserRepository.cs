@@ -17,6 +17,8 @@ namespace SubSnap.Infrastructure.Repositories.Implementations;
 //repository = composizione query
 //here NO savechangesasync !!, because it's done in unit of work!!
 
+//Cancellation token: serve per interrompere la query! e.g.la quesry sta ancora girando ma utente esce dal sito.
+
 public class UserRepository : IUserRepository
 {
     private readonly ApplicationDbContext _context;
@@ -27,41 +29,46 @@ public class UserRepository : IUserRepository
         _passwordHasherService = passwordHasherService;
     }
 
-    public async Task<Core.Domain.Entities.User?> GetByIdAsync(UserId id)  //Task<User?> because it can return null, return type is domain User
+    public async Task<Core.Domain.Entities.User?> FindByIdAsync(UserId id, CancellationToken ct)  //Task<User?> because it can return null, return type is domain User
     {
         return await _context.Users
             //.AsNoTracking()  //NO TRACKING xk ef non deve tracciare nulla, EF here è sol x data reading.
-            .Include(u => u.RefreshTokens)
-            .FirstOrDefaultAsync(x => x.Id == id);
+            //.Include(u => u.RefreshTokens)  per Uber-style il methodo deve essere minimal 0 include() inutili 
+            .FirstOrDefaultAsync(x => x.Id == id, ct);
         //ora entity è di type 'Infrastructure.Persistence.Scaffold.User?'
         //return entity is null ? null : UserMapper.ToDomain(entity);  //mapping entity found to domain!!CLEAN ARCHITECTURE
     }
 
-    public async Task<User?> GetByEmailAsync(Email email)
+    public async Task<User?> FindByEmailAsync(Email email, CancellationToken ct)
     {
         return await _context.Users
             //.AsNoTracking() non usarlo, xk altrimenti refresh token non viene salvato
-            .FirstOrDefaultAsync(x => x.Email == email);
+            .FirstOrDefaultAsync(x => x.Email == email, ct);
         //return entity is null ? null : UserMapper.ToDomain(entity);
     }
 
-    public async Task<User?> GetByRefreshTokenAsync(string refreshToken)
+    public async Task<User?> GetByRefreshTokenAsync(string refreshToken, CancellationToken ct)
     {
         //var users = await _context.Users.Include(u => u.RefreshTokens).ToListAsync();
         //return users.FirstOrDefault(u => u.RefreshTokens.Any(rt => _passwordHasherService.Verify(refreshToken, new PasswordHash(rt.Token))));
-        var tokens = await _context.Set<RefreshToken>()
-        .Include(rt => rt.User) // oppure risali via FK
-        .ToListAsync();
-        var match = tokens.FirstOrDefault(rt =>
-            _passwordHasherService.Verify(
-                refreshToken,
-                new PasswordHash(rt.Token)));
-        return match?.User;
+        var token = await _context.Set<RefreshToken>()
+        .AsNoTracking()
+        .FirstOrDefaultAsync(rt =>
+            _passwordHasherService.Verify(refreshToken, new PasswordHash(rt.Token)),
+            ct);
+
+        if (token is null)
+            return null;
+
+        return await _context.Users
+            .FirstOrDefaultAsync(
+                u => u.Id == EF.Property<UserId>(token, "UserId"),
+                ct);
     }
 
 
     //---COMMANDS---
-    public Task AddAsync(User user)  //Repository + SaveChanges (DDD puro)
+    public Task AddAsync(User user, CancellationToken ct)  //Repository + SaveChanges (DDD puro)
     {
         //var entity = UserMapper.ToEntity(user);
         //_context.User.Add(entity);
@@ -96,35 +103,49 @@ public class UserRepository : IUserRepository
     //    return entity is null ? null : UserAggregateMapper.ToDomain(entity);
     //}
 
-    public async Task<UserAggregate?> GetUserAggregateAsync(UserId userId)
+    public async Task<UserAggregate?> LoadUserAggregateAsync(UserId userId, CancellationToken ct)
     {
         // no navigation properties fra aggregates quindi NO .Include()!!, usa invece query separate. style usato anche da Uber & Stripe
 
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == userId, ct);  //add ct cosi da propagarlo fino al db driver.
 
         if (user is null)
             return null;
 
-        var subscriptions = await _context.Set<Subscription>()
+        var subscriptionsTask =  _context.Set<Subscription>()  //here non usare 'await'
+            .AsNoTracking()
             .Where(s => EF.Property<Guid>(s, "UserId") == userId.Value)
-            .ToListAsync();
+            .ToListAsync(ct); //add ct cosi da propagarlo fino al db driver.
 
-        var sharedLinks = await _context.Set<SharedLink>()
+        var sharedLinksTask =  _context.Set<SharedLink>()  //here non usare 'await'
+            .AsNoTracking()
             .Where(sl => EF.Property<Guid>(sl, "UserId") == userId.Value)
-            .ToListAsync();
-        return new UserAggregate(user, subscriptions, sharedLinks);
+            .ToListAsync(ct);
+
+        await Task.WhenAll(subscriptionsTask, sharedLinksTask);  //EF work using parallel queries!! pero EF di default non puo fare parallel queries, quindi devi settare IDbContextFactory<ApplicationDbContext>...INFO
+
+        return new UserAggregate(
+            user,
+            subscriptionsTask.Result,
+            sharedLinksTask.Result);
     }
 
-    public async Task<UserSubscriptionsAggregate?> GetUserWithSubscriptionsAsync(UserId userId)
+    public async Task<UserSubscriptionsAggregate?> LoadUserWithSubscriptionsAsync(UserId userId, CancellationToken ct)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == userId, ct);
+
         if (user is null)
             return null;
+
         var subscriptions = await _context.Set<Subscription>()
+            .AsNoTracking()
             .Where(s => EF.Property<Guid>(s, "UserId") == userId.Value)  //usi la shadow property
-            .ToListAsync();
+            .ToListAsync(ct);
+
         return new UserSubscriptionsAggregate(user, subscriptions);
     }
 

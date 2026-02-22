@@ -20,7 +20,9 @@ public static class ServiceCollectionExtensions
     {
         //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer( configuration.GetConnectionString("sqlConnection")));
         services.AddDbContext<ApplicationDbContext>( options => options.UseNpgsql( configuration.GetConnectionString("sqlConnection") )
-        );  //postgreSQL x EF core
+        );  //postgreSQL x EF core. SOLO WRITE(sempre usando UnitOfWork)
+
+        services.AddDbContextFactory<ApplicationDbContext>(options =>  options.UseNpgsql(configuration.GetConnectionString("sqlConnection")));  //SOLO READ(cosi puoi fare query parallele!!)
 
         //registrazione dei repositories!!
         //quando qualcuno chiede IUserRepository, la DI darà un’istanza concreta di UserRepository
