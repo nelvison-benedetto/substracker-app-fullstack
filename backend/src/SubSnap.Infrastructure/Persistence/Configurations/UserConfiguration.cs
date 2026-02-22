@@ -72,6 +72,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()  //un token non può esistere senza user
             .OnDelete(DeleteBehavior.Cascade);  //se elimini user, cancelli tutti i suoi refresh token
 
+
     }
 }
 
