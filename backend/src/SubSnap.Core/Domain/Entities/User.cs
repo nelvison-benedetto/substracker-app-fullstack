@@ -12,7 +12,7 @@ namespace SubSnap.Core.Domain.Entities;
 //rappresentare concetti di business, contenere logica (es. ChangeEmail, Login()), essere indipendente da EF, SQL, Docker, VPS
 public class User
 {
-    private readonly List<RefreshToken> _refreshTokens = new();
+    private readonly List<RefreshToken> _refreshTokens = new();  //private xk SOLO user puo modificcarli, quindi i refreshtokens fanno parte dell'aggregate user!!(non hanno un lifecycle indipendente, non hanno un Repository proprio, non possono vivere senza user!!)
     
     public UserId Id { get; private set; }  //type other obj (readonly struct)(./ValueObjects/), COSI FAI LA VALIDAZIONE
         //nullable. verrà creato da DB. nessuns 'private setter' sull'id, domain puro
