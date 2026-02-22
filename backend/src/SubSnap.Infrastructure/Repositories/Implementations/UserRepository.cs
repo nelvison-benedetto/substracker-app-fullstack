@@ -52,19 +52,7 @@ public class UserRepository : IUserRepository
     }
 
 
-    //AGGREGATES  //TO SET CORRECT SOLO DOPO CHE FACCIO I CRUD DI BASE X ALL
-    //public async Task<UserAggregate?> GetAggregateAsync(UserId id)
-    //{
-    //    var entity = await _context.Users
-    //        .Include(u => u.Subscription)  //ok! gli aggregate vanno caricati insieme!
-    //        .Include(u => u.SharedLink)
-    //        .AsNoTracking()
-    //        .FirstOrDefaultAsync(u => u.UserId == id.Value);
-
-    //    return entity is null ? null : UserAggregateMapper.ToDomain(entity);
-    //}
-
-    //COMMANDS
+    //---COMMANDS---
     public Task AddAsync(User user)  //Repository + SaveChanges (DDD puro)
     {
         //var entity = UserMapper.ToEntity(user);
@@ -84,6 +72,68 @@ public class UserRepository : IUserRepository
         // ❗ NON SaveChanges qui
         // l'ID verrà valorizzato DOPO dal UnitOfWork!!
         return Task.CompletedTask;
+    }
+
+    //---AGGREGATES---
+
+    //old approach
+    //public async Task<UserAggregate?> GetAggregateAsync(UserId id)
+    //{
+    //    var entity = await _context.Users
+    //        .Include(u => u.Subscription)  //ok! gli aggregate vanno caricati insieme!
+    //        .Include(u => u.SharedLink)
+    //        .AsNoTracking()
+    //        .FirstOrDefaultAsync(u => u.UserId == id.Value);
+
+    //    return entity is null ? null : UserAggregateMapper.ToDomain(entity);
+    //}
+
+    public async Task<UserAggregate?> GetUserAggregateAsync(UserId userId)
+    {
+        var userEntity = await _context.Users
+            .Include(u => u.Subscriptions)
+            .Include(u => u.SharedLinks)
+            .FirstOrDefaultAsync(u => u.Id == userId.Value);
+        if (userEntity is null) return null;
+        var userDomain = new User(
+            new Email(userEntity.Email),
+            new PasswordHash(userEntity.PasswordHash)
+        );
+        var subscriptionsDomain = userEntity.Subscriptions
+            .Select(s => new Subscription(
+                new SubscriptionId(s.Id),
+                s.Amount,
+                s.CreatedAt
+            ))
+            .ToList();
+        var sharedLinksDomain = userEntity.SharedLinks
+            .Select(sl => new SharedLink(
+                new SharedLinkId(sl.Id),
+                sl.Url,
+                sl.CreatedAt
+            ))
+            .ToList();
+        return new UserAggregate(userDomain, subscriptionsDomain, sharedLinksDomain);
+    }
+
+    public async Task<UserSubscriptionsAggregate?> GetUserWithSubscriptionsAsync(UserId userId)
+    {
+        var userEntity = await _context.Users
+            .Include(u => u.Subscriptions)
+            .FirstOrDefaultAsync(u => u.Id == userId.Value);
+        if (userEntity is null) return null;
+        var userDomain = new User(
+            new Email(userEntity.Email),
+            new PasswordHash(userEntity.PasswordHash)
+        );
+        var subscriptionsDomain = userEntity.Subscriptions
+            .Select(s => new Subscription(
+                new SubscriptionId(s.Id),
+                s.Amount,
+                s.CreatedAt
+            ))
+            .ToList();
+        return new UserSubscriptionsAggregate(userDomain, subscriptionsDomain);
     }
 
 }

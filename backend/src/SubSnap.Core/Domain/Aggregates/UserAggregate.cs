@@ -26,7 +26,7 @@ public sealed class UserAggregate
         SharedLinks = sharedLinks?.ToList().AsReadOnly()
             ?? throw new ArgumentNullException(nameof(sharedLinks));
     }
-    //e  poi nel repository usi method GetUSerAggregateAsync() che return type <UserAggregate>
+    //e poi nel repository usi method GetUserAggregateAsync() che return type <UserAggregate>
     //se vuoi solo e.g. user+ subscription: nel repo usi method GetUserWithSubscriptionsAsync() che return type <UserSubscriptionsAggregate>
 }
 /*
