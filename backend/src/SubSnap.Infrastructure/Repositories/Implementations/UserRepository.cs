@@ -47,15 +47,17 @@ public class UserRepository : IUserRepository
         //return entity is null ? null : UserMapper.ToDomain(entity);
     }
 
-    public async Task<User?> GetByRefreshTokenAsync(string refreshToken, CancellationToken ct)
+    public async Task<User?> FindByRefreshTokenAsync(string refreshToken, CancellationToken ct)
     {
         //var users = await _context.Users.Include(u => u.RefreshTokens).ToListAsync();
         //return users.FirstOrDefault(u => u.RefreshTokens.Any(rt => _passwordHasherService.Verify(refreshToken, new PasswordHash(rt.Token))));
         var token = await _context.Set<RefreshToken>()
-        .AsNoTracking()
-        .FirstOrDefaultAsync(rt =>
-            _passwordHasherService.Verify(refreshToken, new PasswordHash(rt.Token)),
-            ct);
+            .AsNoTracking()
+            .FirstOrDefaultAsync(rt =>
+                _passwordHasherService.Verify(
+                    refreshToken,
+                    new PasswordHash(rt.Token)),
+                ct);
 
         if (token is null)
             return null;
