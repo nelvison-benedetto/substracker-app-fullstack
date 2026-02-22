@@ -30,7 +30,8 @@ public class UserRepository : IUserRepository
     public async Task<Core.Domain.Entities.User?> GetByIdAsync(UserId id)  //Task<User?> because it can return null, return type is domain User
     {
         return await _context.Users
-            .AsNoTracking()  //NO TRACKING xk ef non deve tracciare nulla, EF here è sol x data reading.
+            //.AsNoTracking()  //NO TRACKING xk ef non deve tracciare nulla, EF here è sol x data reading.
+            .Include(u => u.RefreshTokens)
             .FirstOrDefaultAsync(x => x.Id == id);
         //ora entity è di type 'Infrastructure.Persistence.Scaffold.User?'
         //return entity is null ? null : UserMapper.ToDomain(entity);  //mapping entity found to domain!!CLEAN ARCHITECTURE
