@@ -10,4 +10,18 @@
     <ProjectReference Include="..\SubSnap.Core\SubSnap.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstractions\Messaging\" />
+    <Folder Include="Abstractions\Queries\" />
+    <Folder Include="Abstractions\Persistence\" />
+    <Folder Include="Contracts\Commands\" />
+    <Folder Include="Contracts\Results\" />
+    <Folder Include="Contracts\Queries\" />
+    <Folder Include="DTOs_OLD_ORIGINALIN.core\Shared_NOWALLFILESIN.application-common\" />
+    <Folder Include="Common\" />
+    <Folder Include="UseCases\Auth\Login\" />
+    <Folder Include="UseCases\Auth\Logout\" />
+    <Folder Include="UseCases\Auth\RefreshToken\" />
+  </ItemGroup>
+
 </Project>

@@ -38,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SubSnap.Application\SubSnap.Application.csproj" />
     <ProjectReference Include="..\SubSnap.Core\SubSnap.Core.csproj" />
   </ItemGroup>
 

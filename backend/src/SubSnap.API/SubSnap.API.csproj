@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SubSnap.Core\SubSnap.Core.csproj" />
+    <ProjectReference Include="..\SubSnap.Application\SubSnap.Application.csproj" />
     <ProjectReference Include="..\SubSnap.Infrastructure\SubSnap.Infrastructure.csproj" />
   </ItemGroup>
 

@@ -13,7 +13,7 @@
     <Folder Include="Domain\Events\" />
     <Folder Include="Domain\Constants\" />
     <Folder Include="Domain\Specifications\" />
-    <Folder Include="DTOs\Shared\" />
+    <Folder Include="DTOsOLDNOWISIN.Application_dontdeletebackup\Shared\" />
     <Folder Include="Enums\" />
     <Folder Include="Exceptions\DomainExceptions\" />
     <Folder Include="Exceptions\ApplicationExceptions\" />
