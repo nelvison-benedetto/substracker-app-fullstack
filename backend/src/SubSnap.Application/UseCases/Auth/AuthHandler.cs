@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Core.Services.Application;
 
+//in futuro lo puoi splittare in cartelle Login/Logout/Refresh (Uber style), e creare 3 handler diversi, ma per ora va bene cosi
+
 public class AuthHandler
 {
     private readonly IUserRepository _userRepository;
