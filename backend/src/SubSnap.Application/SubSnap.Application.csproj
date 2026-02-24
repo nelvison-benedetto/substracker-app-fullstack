@@ -19,7 +19,6 @@
     <Folder Include="Contracts\Queries\" />
     <Folder Include="DTOs_OLD_ORIGINALIN.core\Shared_NOWALLFILESIN.application-common\" />
     <Folder Include="Common\" />
-    <Folder Include="UseCases\Auth\Login\" />
     <Folder Include="UseCases\Auth\Logout\" />
     <Folder Include="UseCases\Auth\RefreshToken\" />
     <Folder Include="UseCases\Users\GetUserById\" />
