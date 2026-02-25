@@ -7,19 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\Clock\" />
-    <Folder Include="Abstractions\Messaging\" />
+    <Folder Include="AbstractionsOLDNOWALLIN.application-ports\Clock\" />
+    <Folder Include="AbstractionsOLDNOWALLIN.application-ports\Messaging\" />
     <Folder Include="ContractsOLDNOWALLIN.application-ports\External\" />
     <Folder Include="Domain\Events\" />
     <Folder Include="Domain\Constants\" />
     <Folder Include="Domain\Specifications\" />
     <Folder Include="DTOsOLDNOWISIN.Application_dontdeletebackup\Shared\" />
-    <Folder Include="Enums\" />
-    <Folder Include="Exceptions\DomainExceptions\" />
-    <Folder Include="Exceptions\ApplicationExceptions\" />
-    <Folder Include="Exceptions\InfrastructureExceptions\" />
+    <Folder Include="Enums%28domain-related%29\" />
+    <Folder Include="Exceptions\DomainExceptionsOLDNOWISIN.core-domain-exceptions\" />
+    <Folder Include="Exceptions\ApplicationExceptionsWRONG.core-cannotknowotherlayers\" />
+    <Folder Include="Exceptions\InfrastructureExceptionsWRONG.core-cannotknowotherlayers\" />
     <Folder Include="HelpersGeneric\GuardClauses\" />
-    <Folder Include="HelpersGeneric\Extensions\" />
+    <Folder Include="HelpersGeneric\ExtensionsSCONSIGLIATO-hereonly-no-http-ef-serialization\" />
     <Folder Include="HelpersGeneric\Result\" />
     <Folder Include="ServicesOLDNOWALLINtargets\DomainOLD%28neverused%29\" />
     <Folder Include="ServicesOLDNOWALLINtargets\ValidatorsOLD%28neverused%29\" />
