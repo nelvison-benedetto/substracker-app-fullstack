@@ -19,7 +19,6 @@
     <Folder Include="Common\" />
     <Folder Include="UseCases\Auth\Logout\" />
     <Folder Include="UseCases\Auth\RefreshToken\" />
-    <Folder Include="UseCases\Users\GetUserById\" />
   </ItemGroup>
 
 </Project>
