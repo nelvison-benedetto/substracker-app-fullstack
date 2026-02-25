@@ -9,7 +9,7 @@
   <ItemGroup>
     <Folder Include="Abstractions\Clock\" />
     <Folder Include="Abstractions\Messaging\" />
-    <Folder Include="Contracts\External\" />
+    <Folder Include="ContractsOLDNOWALLIN.application-ports\External\" />
     <Folder Include="Domain\Events\" />
     <Folder Include="Domain\Constants\" />
     <Folder Include="Domain\Specifications\" />
