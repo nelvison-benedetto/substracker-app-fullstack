@@ -1,10 +1,4 @@
-﻿using SubSnap.Core.Abstractions.Identity;
-using SubSnap.Core.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Core.Domain.Entities;
 
@@ -65,8 +59,7 @@ public class User
     {
         _refreshTokens.Add(new RefreshToken(token, expiresAt));
     }
-    public RefreshToken? FindActiveRefreshToken(
-    string providedToken, IPasswordHasherService hasher)
+    public RefreshToken? FindActiveRefreshToken( string providedToken, IPasswordHasherService hasher)
     {
         return _refreshTokens
             .FirstOrDefault(rt =>

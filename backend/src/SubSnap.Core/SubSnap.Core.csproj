@@ -15,9 +15,9 @@
     <Folder Include="Domain\Specifications\" />
     <Folder Include="DTOsOLDNOWISIN.Application_dontdeletebackup\Shared\" />
     <Folder Include="Enums%28domain-related%29\" />
-    <Folder Include="Exceptions\DomainExceptionsOLDNOWISIN.core-domain-exceptions\" />
-    <Folder Include="Exceptions\ApplicationExceptionsWRONG.core-cannotknowotherlayers\" />
-    <Folder Include="Exceptions\InfrastructureExceptionsWRONG.core-cannotknowotherlayers\" />
+    <Folder Include="ExceptionsWRONG\DomainExceptionsOLDNOWISIN.core-domain-exceptions\" />
+    <Folder Include="ExceptionsWRONG\ApplicationExceptionsWRONG.core-cannotknowotherlayers\" />
+    <Folder Include="ExceptionsWRONG\InfrastructureExceptionsWRONG.core-cannotknowotherlayers\" />
     <Folder Include="HelpersGeneric\GuardClauses\" />
     <Folder Include="HelpersGeneric\ExtensionsSCONSIGLIATO-hereonly-no-http-ef-serialization\" />
     <Folder Include="HelpersGeneric\Result\" />

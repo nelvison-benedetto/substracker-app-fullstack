@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using SubSnap.Core.DTOs.Application.Commands.Users;
 
 namespace SubSnap.API.Validators;
 

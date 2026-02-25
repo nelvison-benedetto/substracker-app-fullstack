@@ -3,10 +3,6 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using SubSnap.API.Contracts.Responses;
 using SubSnap.API.Validators;
-using SubSnap.Core.Contracts.Services;
-using SubSnap.Core.DTOs.Application.Commands.Users;
-using SubSnap.Core.DTOs.External.Requests.Users;
-using SubSnap.Core.DTOs.External.Responses.Users;
 
 namespace SubSnap.API.Controllers.V1;
 
