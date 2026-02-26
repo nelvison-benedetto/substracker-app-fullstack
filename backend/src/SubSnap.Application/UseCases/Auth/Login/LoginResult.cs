@@ -6,6 +6,4 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Application.UseCases.Auth.Login;
 
-internal class LoginResult
-{
-}
+public sealed record LoginResult( string AccessToken, string RefreshToken );
