@@ -1,9 +1,9 @@
-﻿using SubSnap.Application.UseCases.Users;
-using SubSnap.Application.UseCases.Users.RegisterUser;
+﻿//using SubSnap.Application.UseCases.Users;
+//using SubSnap.Application.UseCases.Users.RegisterUser;
 
-namespace SubSnap.Application.Ports.Services;
+//namespace SubSnap.Application.Ports.Services;
 
-public interface IUserService
-{
-    Task<UserResult> RegisterAsync(RUCommand command, CancellationToken ct);
-}
+//public interface IUserService
+//{
+//    Task<UserResult> RegisterAsync(RUCommand command, CancellationToken ct);
+//}
