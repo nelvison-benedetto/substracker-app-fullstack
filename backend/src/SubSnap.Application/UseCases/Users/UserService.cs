@@ -1,19 +1,22 @@
-﻿using SubSnap.Core.Domain.Entities;
+﻿using SubSnap.Application.Ports.Auth;
+using SubSnap.Application.Ports.Persistence;
+using SubSnap.Application.Ports.Services;
+using SubSnap.Application.UseCases.Users.RegisterUser;
+using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.Exceptions;
 using SubSnap.Core.Domain.ValueObjects;
-using SubSnap.Core.DTOs.Application.Commands.Users;
 
-namespace SubSnap.Core.Services.Application;
+namespace SubSnap.Application.UseCases.Users;
 
 //no EF, no DBO 
 //transazione controllata, orchestration pulita
-public class Handler : IUserService
+public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasherService _passwordHasherService;
 
-    public Handler(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasherService passwordHasherService)
+    public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasherService passwordHasherService)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
@@ -48,11 +51,11 @@ public class Handler : IUserService
     //    );
     //}
 
-    public async Task<UserResult> RegisterAsync(Command command)
+    public async Task<UserResult> RegisterAsync(RegisterUserCommand command, CancellationToken ct)
     {
         // 1️⃣ Email unique
         var existing =
-            await _userRepository.GetByEmailAsync(new Email(command.Email));
+            await _userRepository.FindByEmailAsync(new Email(command.Email), ct);
         if (existing != null)
             throw new EmailAlreadyRegisteredException(command.Email);
         // 2️⃣ HASH PASSWORD (IMPORTANTISSIMO)
@@ -63,7 +66,7 @@ public class Handler : IUserService
             passwordHash
         );
         // 4️⃣ Persist
-        await _userRepository.AddAsync(user);
+        await _userRepository.AddAsync(user, ct);
         await _unitOfWork.SaveChangesAsync();
         return new UserResult(
             user.Id.Value,
