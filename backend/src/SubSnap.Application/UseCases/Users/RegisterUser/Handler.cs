@@ -1,12 +1,7 @@
-﻿using SubSnap.Core.Abstractions.Identity;
-using SubSnap.Core.Contracts.Repositories;
-using SubSnap.Core.Contracts.Services;
-using SubSnap.Core.Contracts.UnitOfWork;
-using SubSnap.Core.Domain.Entities;
+﻿using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.Exceptions;
 using SubSnap.Core.Domain.ValueObjects;
 using SubSnap.Core.DTOs.Application.Commands.Users;
-using SubSnap.Core.DTOs.Application.Results.Users;
 
 namespace SubSnap.Core.Services.Application;
 

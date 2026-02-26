@@ -1,4 +1,6 @@
-﻿using SubSnap.Core.Domain.ValueObjects;
+﻿using SubSnap.Application.Ports.Auth;
+using SubSnap.Application.Ports.Persistence;
+using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Application.UseCases.Auth;
 
@@ -23,9 +25,9 @@ public class AuthHandler
         _uow = uow;
     }
 
-    public async Task<(string accessToken, string refreshToken)> LoginAsync(Email email, string plainPassword)
+    public async Task<(string accessToken, string refreshToken)> LoginAsync(Email email, string plainPassword, CancellationToken ct)
     {
-        var user = await _userRepository.GetByEmailAsync(email)
+        var user = await _userRepository.FindByEmailAsync(email, ct)
             ?? throw new UnauthorizedAccessException();
 
         if (!_passwordHasherService.Verify(plainPassword, user.PasswordHash))
@@ -39,26 +41,34 @@ public class AuthHandler
         await _uow.SaveChangesAsync();
         return (accessToken, refreshRaw);
     }
-    public async Task LogoutAsync(UserId userId, string refreshToken)
+    public async Task LogoutAsync(UserId userId, string refreshToken, CancellationToken ct)
     {
-        var user = await _userRepository.GetByIdAsync(userId)
+        var user = await _userRepository.FindByIdAsync(userId, ct)
             ?? throw new UnauthorizedAccessException();
-        var token = user.FindActiveRefreshToken(refreshToken,_passwordHasherService)
+        //var token = user.FindActiveRefreshToken(refreshToken, _passwordHasherService)
+        //    ?? throw new UnauthorizedAccessException();
+        var token = user.FindActiveRefreshToken(
+            storedToken => _passwordHasherService.Verify(
+                    refreshToken,
+                    new PasswordHash(storedToken)))  //ora vero DDD (user.cs Domain non consce esterni ma gli arriva solo una funct)
             ?? throw new UnauthorizedAccessException();
         user.RevokeRefreshToken(token);
         await _uow.SaveChangesAsync();
     }
-
-    public async Task<(string access, string refresh)> RefreshAsync(string refreshToken)
+    
+    public async Task<(string access, string refresh)> RefreshAsync(string refreshToken, CancellationToken ct)
     {
         // 1️⃣ trova utente con token attivo
-        var user = await _userRepository.GetByRefreshTokenAsync(refreshToken)
+        var user = await _userRepository.FindByRefreshTokenAsync(refreshToken, ct)
             ?? throw new UnauthorizedAccessException();
         // 2️⃣ trova token domain
+        //var token = user.FindActiveRefreshToken(refreshToken,_passwordHasherService)  //WRONG non vedo DDD x User.cs
         var token = user.FindActiveRefreshToken(
-            refreshToken,
-            _passwordHasherService)
+            storedToken => _passwordHasherService.Verify(
+                    refreshToken,
+                    new PasswordHash(storedToken)))  //ora vero DDD (user.cs Domain non consce esterni ma gli arriva solo una funct)
             ?? throw new UnauthorizedAccessException();
+        //    ?? throw new UnauthorizedAccessException();
         // 3️⃣ revoke old token (ROTATION)
         user.RevokeRefreshToken(token);
         // 4️⃣ crea nuovi token

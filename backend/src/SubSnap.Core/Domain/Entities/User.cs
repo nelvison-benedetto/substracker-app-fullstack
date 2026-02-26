@@ -59,15 +59,19 @@ public class User
     {
         _refreshTokens.Add(new RefreshToken(token, expiresAt));
     }
-    public RefreshToken? FindActiveRefreshToken( string providedToken, IPasswordHasherService hasher)
+    public RefreshToken? FindActiveRefreshToken(
+        //string providedToken, 
+        //IPasswordHasherService hasher,  WRONG domain non deve conoscere servizi esterni, il domain non deve hasharare! deve solo sapere se matcha.
+        Func<string, bool> tokenMatcher)  //vero DDD (non conosce infrastructure, non conosce plugin, gli arriva solo una regola(funct))!
     {
         return _refreshTokens
             .FirstOrDefault(rt =>
-                rt.IsActive() &&
-                hasher.Verify(
-                    providedToken,
-                    new PasswordHash(rt.Token)));
+                rt.IsActive() && tokenMatcher(rt.Token));
+        //hasher.Verify(
+        //    providedToken,
+        //    new PasswordHash(rt.Token)));
     }
+
     public void RevokeRefreshToken(RefreshToken token)
     {
         if (!token.IsActive())

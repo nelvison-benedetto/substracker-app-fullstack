@@ -23,7 +23,7 @@ public class UserRepository : IUserRepository
         _context = context;
         _passwordHasherService = passwordHasherService;
     }
-
+    
     public async Task<Core.Domain.Entities.User?> FindByIdAsync(UserId id, CancellationToken ct)  //Task<User?> because it can return null, return type is domain User
     {
         return await _context.Users
