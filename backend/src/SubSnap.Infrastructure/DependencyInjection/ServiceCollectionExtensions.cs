@@ -1,6 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SubSnap.Application.Ports.Auth;
+using SubSnap.Application.Ports.DataLoadersorQueries;
+using SubSnap.Application.Ports.Persistence;
+using SubSnap.Application.Ports.Services;
+using SubSnap.Application.UseCases.Auth;
+using SubSnap.Application.UseCases.Users;
 using SubSnap.Infrastructure.DataLoaders;
 using SubSnap.Infrastructure.Identity.Services;
 using SubSnap.Infrastructure.Persistence.Context;
@@ -27,7 +33,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserService, UserService>();     //!!!application services
         services.AddScoped<IPasswordHasherService, AspNetPasswordHasherService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
-        services.AddScoped<AuthService>(); //non serve interfaccia x utilizzarlo xk non attravera i BOUNDARIES, è un servizio che rimane interno a .Infrastructure, non lo chiama nessun altro prj.
+        services.AddScoped<AuthHandler>(); //non serve interfaccia x utilizzarlo xk non attravera i BOUNDARIES, è un servizio che rimane interno a .Infrastructure, non lo chiama nessun altro prj.
         services.AddScoped<IUserAggregateLoader, UserAggregateLoader>();
 
         return services;

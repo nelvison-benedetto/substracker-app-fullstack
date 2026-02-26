@@ -1,9 +1,8 @@
 ﻿using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.Exceptions;
 using SubSnap.Core.Domain.ValueObjects;
-using SubSnap.Core.DTOs.Application.Commands.Users;
 
-namespace SubSnap.Core.Services.Application;
+namespace SubSnap.Application.UseCases.Users.RegisterUser;
 
 //no EF, no DBO 
 //transazione controllata, orchestration pulita
