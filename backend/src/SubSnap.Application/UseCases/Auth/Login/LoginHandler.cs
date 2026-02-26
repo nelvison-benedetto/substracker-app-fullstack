@@ -9,6 +9,7 @@ public sealed class LoginHandler
 {
 
     //version without policies/ e loaders/
+    //ORIGINAL CODE in AuthHandler.cs
     //private readonly IUserRepository _userRepository;
     //private readonly IPasswordHasherService _passwordHasherService;
     //private readonly IJwtTokenService _jwtTokenService;
@@ -53,14 +54,16 @@ public sealed class LoginHandler
     private readonly IUnitOfWork _uow;
 
     public LoginHandler(
-        IUserRepository userRepository,
-        IPasswordHasherService passwordHasherService,
-        IJwtTokenService jwtTokenService,
+        UserByEmailLoader loader,
+        PasswordPolicy passwordPolicy,
+        IJwtTokenService jwt,
+        IPasswordHasherService hasher,
         IUnitOfWork uow)
     {
-        _userRepository = userRepository;
-        _passwordHasherService = passwordHasherService;
-        _jwtTokenService = jwtTokenService;
+        _loader = loader;
+        _passwordPolicy = passwordPolicy;
+        _jwt = jwt;
+        _hasher = hasher;
         _uow = uow;
     }
 
@@ -68,18 +71,13 @@ public sealed class LoginHandler
     {
         var user = await _loader.Load(cmd.Email, ct)
             ?? throw new UnauthorizedAccessException();
-
-        _passwordPolicy.EnsureValid(cmd.Password, user);
-
+        _passwordPolicy.EnsureValid(cmd.PlainPassword, user);
         var access = _jwt.GenerateAccessToken(user);
-
         var refreshRaw = _jwt.GenerateRefreshToken();
         var refreshHash = _hasher.Hash(refreshRaw);
-
-        user.AddRefreshToken(refreshHash.Value, DateTime.UtcNow.AddDays(30));
-
+        var expiry = DateTime.UtcNow.AddDays(30);
+        user.AddRefreshToken(refreshHash.Value, expiry);
         await _uow.SaveChangesAsync(ct);
-
         return new(access, refreshRaw);
     }
 

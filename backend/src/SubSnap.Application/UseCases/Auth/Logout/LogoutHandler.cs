@@ -1,10 +1,15 @@
 ﻿using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.Persistence;
+using SubSnap.Application.UseCases.Auth.Logout.Loaders;
+using SubSnap.Application.UseCases.Auth.Logout.Policies;
+using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Application.UseCases.Auth.Logout;
 
 public sealed class LogoutHandler
 {
+    private readonly UserByIdLoader _loader;
+    private readonly LogoutTokenPolicy _passwordPolicy;
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasherService _passwordHasherService;
     private readonly IUnitOfWork _uow;
@@ -25,14 +30,13 @@ public sealed class LogoutHandler
             ?? throw new UnauthorizedAccessException();
 
         var token = user.FindActiveRefreshToken(
-            stored =>
+            storedToken =>
                 _passwordHasherService.Verify(
                     command.RefreshToken,
-                    new PasswordHash(stored)))
+                    new PasswordHash(storedToken)))
             ?? throw new UnauthorizedAccessException();
 
         user.RevokeRefreshToken(token);
-
         await _uow.SaveChangesAsync(ct);
     }
 

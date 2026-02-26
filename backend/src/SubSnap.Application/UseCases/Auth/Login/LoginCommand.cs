@@ -2,4 +2,4 @@
 
 namespace SubSnap.Application.UseCases.Auth.Login;
 
-public sealed record LoginCommand(Email Email, string Password);
+public sealed record LoginCommand(Email Email, string PlainPassword);
