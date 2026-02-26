@@ -5,5 +5,5 @@ namespace SubSnap.Application.Ports.Services;
 
 public interface IUserService
 {
-    Task<UserResult> RegisterAsync(RegisterUserCommand command, CancellationToken ct);
+    Task<UserResult> RegisterAsync(RUCommand command, CancellationToken ct);
 }

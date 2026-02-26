@@ -1,5 +1,6 @@
 ﻿using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.Persistence;
+using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Application.UseCases.Auth.RefreshToken;
 
@@ -22,13 +23,12 @@ public sealed class RTHandler
         _uow = uow;
     }
 
-    public async Task<RefreshTokenResult> Handle(
-        RefreshTokenCommand command,
-        CancellationToken ct)
+    public async Task<RTResult> Handle( RTCommand command, CancellationToken ct )
     {
         var user = await _userRepository.FindByRefreshTokenAsync(
             command.RefreshToken, ct)
             ?? throw new UnauthorizedAccessException();
+           //oppure metti questo code in Loaders/
 
         var token = user.FindActiveRefreshToken(
             stored =>
@@ -36,6 +36,7 @@ public sealed class RTHandler
                     command.RefreshToken,
                     new PasswordHash(stored)))
             ?? throw new UnauthorizedAccessException();
+           //oppure metti questo code in Policies/
 
         user.RevokeRefreshToken(token);
 
@@ -50,6 +51,6 @@ public sealed class RTHandler
 
         await _uow.SaveChangesAsync(ct);
 
-        return new RefreshTokenResult(newAccess, newRefreshRaw);
+        return new RTResult(newAccess, newRefreshRaw);
     }
 }

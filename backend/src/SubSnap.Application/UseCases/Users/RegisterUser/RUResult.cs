@@ -1,5 +1,3 @@
 ﻿namespace SubSnap.Application.UseCases.Users.RegisterUser;
 
-public class RegisterUserResult
-{
-}
+public sealed record RUResult( Guid Id, string Email );

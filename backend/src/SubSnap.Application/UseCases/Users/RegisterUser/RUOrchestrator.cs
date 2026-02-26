@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SubSnap.Application.UseCases.Auth.RefreshToken;
+﻿namespace SubSnap.Application.UseCases.Users.RegisterUser;
 
 //DA USARE SOLO QUANDO HANDLER DIVENTA DIFFICILE
-public sealed class RTOrchestrator
+public sealed class RUOrchestrator
 {
     /*
         lo usi solo se quando Handler(che attualmente lavora anche come orchestrator) inizia a mostrare difficoltà di coordination perche e.g.supera >40-60rows / il flow (di Handler.cs) diventa molto lungo.

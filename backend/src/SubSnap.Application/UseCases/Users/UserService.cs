@@ -1,7 +1,4 @@
-﻿using SubSnap.Application.Abstractions.Auth;
-using SubSnap.Application.Abstractions.Persistence;
-using SubSnap.Application.Abstractions.Services;
-using SubSnap.Application.UseCases.Users.RegisterUser;
+﻿using SubSnap.Application.UseCases.Users.RegisterUser;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.Exceptions;
 using SubSnap.Core.Domain.ValueObjects;
@@ -51,7 +48,7 @@ public class UserService : IUserService
     //    );
     //}
 
-    public async Task<UserResult> RegisterAsync(RegisterUserCommand command, CancellationToken ct)
+    public async Task<UserResult> RegisterAsync(RUCommand command, CancellationToken ct)
     {
         // 1️⃣ Email unique
         var existing =

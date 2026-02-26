@@ -15,9 +15,9 @@ public class UsersController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
-    private readonly IValidator<RegisterUserCommand> _validator;
+    private readonly IValidator<RUCommand> _validator;
 
-    public UsersController( IMapper mapper, IUserService userService, IValidator<RegisterUserCommand> validator)
+    public UsersController( IMapper mapper, IUserService userService, IValidator<RUCommand> validator)
     {
         _mapper = mapper;
         _userService = userService;
@@ -31,7 +31,7 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<ApiResult<UserResponse>>> Register( RegisterUserRequest request , CancellationToken ct)
     {
         // Request -> Command mapping
-        var command = _mapper.Map<RegisterUserCommand>(request);
+        var command = _mapper.Map<RUCommand>(request);
         // Validazione centralizzata
         await ValidatorHelper.ValidateCommandAsync(_validator, command);
         // Application Layer

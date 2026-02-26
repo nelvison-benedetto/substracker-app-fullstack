@@ -4,7 +4,7 @@ using SubSnap.Application.UseCases.Users.RegisterUser;
 namespace SubSnap.API.Validators;
 
 //Validator vive solo nell’API, non tocca Domain, Repository o DB!
-public class RegisterUserValidator : AbstractValidator<RegisterUserCommand>  //abstractValidator<T> è FluentValidation.
+public class RegisterUserValidator : AbstractValidator<RUCommand>  //abstractValidator<T> è FluentValidation.
 {
     public RegisterUserValidator() 
     {

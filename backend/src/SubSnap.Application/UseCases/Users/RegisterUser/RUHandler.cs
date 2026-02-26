@@ -1,4 +1,6 @@
-﻿using SubSnap.Core.Domain.Entities;
+﻿using SubSnap.Application.Ports.Auth;
+using SubSnap.Application.Ports.Persistence;
+using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.Exceptions;
 using SubSnap.Core.Domain.ValueObjects;
 
@@ -6,13 +8,13 @@ namespace SubSnap.Application.UseCases.Users.RegisterUser;
 
 //no EF, no DBO 
 //transazione controllata, orchestration pulita
-public class RegisterUserHandler : IUserService
+public class RUHandler : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasherService _passwordHasherService;
 
-    public RegisterUserHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasherService passwordHasherService)
+    public RUHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasherService passwordHasherService)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
@@ -47,11 +49,12 @@ public class RegisterUserHandler : IUserService
     //    );
     //}
 
-    public async Task<UserResult> RegisterAsync(RegisterUserCommand command)
+    public async Task<UserResult> RegisterAsync(RUCommand command, CancellationToken ct)
     {
         // 1️⃣ Email unique
         var existing =
-            await _userRepository.GetByEmailAsync(new Email(command.Email));
+            await _userRepository.FindByEmailAsync(new Email(command.Email), ct);
+
         if (existing != null)
             throw new EmailAlreadyRegisteredException(command.Email);
         // 2️⃣ HASH PASSWORD (IMPORTANTISSIMO)
@@ -62,7 +65,7 @@ public class RegisterUserHandler : IUserService
             passwordHash
         );
         // 4️⃣ Persist
-        await _userRepository.AddAsync(user);
+        await _userRepository.AddAsync(user, ct);
         await _unitOfWork.SaveChangesAsync();
         return new UserResult(
             user.Id.Value,
