@@ -16,6 +16,7 @@
     <Folder Include="ContractsOLDNOWallcontractsAREINusecases\Queries\" />
     <Folder Include="DTOs_OLD_ORIGINALIN.core\Shared_NOWALLFILESIN.application-common\" />
     <Folder Include="CommonSCONSIGLIATO-no-dto-no-shared\" />
+    <Folder Include="Ports\Users\" />
     <Folder Include="UseCases\Auth\RefreshToken\Loaders\" />
     <Folder Include="UseCases\Auth\RefreshToken\Policies\" />
     <Folder Include="UseCases\Users\RegisterUser\Loaders\" />

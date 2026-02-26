@@ -5,7 +5,7 @@ using SubSnap.Application.UseCases.Auth.Login.Policies;
 
 namespace SubSnap.Application.UseCases.Auth.Login;
 
-public sealed class LoginHandler
+public sealed class LoginHandler : ILoginHandler
 {
 
     //code without policies/ e loaders/   ORIGINAL CODE in AuthHandler.cs

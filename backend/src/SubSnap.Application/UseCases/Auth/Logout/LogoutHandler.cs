@@ -1,10 +1,11 @@
-﻿using SubSnap.Application.Ports.Persistence;
+﻿using SubSnap.Application.Ports.Auth;
+using SubSnap.Application.Ports.Persistence;
 using SubSnap.Application.UseCases.Auth.Logout.Loaders;
 using SubSnap.Application.UseCases.Auth.Logout.Policies;
 
 namespace SubSnap.Application.UseCases.Auth.Logout;
 
-public sealed class LogoutHandler
+public sealed class LogoutHandler : ILogoutHandler
 {
     //code without policies/ e loaders/, ORIGINAL CODE IN AuthHandler.cs
     //private readonly UserByIdLoader _loader;
@@ -48,9 +49,7 @@ public sealed class LogoutHandler
         _policy = policy;
         _uow = uow;
     }
-    public async Task Handle(
-        LogoutCommand command,
-        CancellationToken ct)
+    public async Task Handle( LogoutCommand command, CancellationToken ct)
     {
         var user = await _loader.Load(command.UserId, ct)
             ?? throw new UnauthorizedAccessException();
