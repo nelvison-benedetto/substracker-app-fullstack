@@ -16,7 +16,6 @@
     <Folder Include="ContractsOLDNOWallcontractsAREINusecases\Queries\" />
     <Folder Include="DTOs_OLD_ORIGINALIN.core\Shared_NOWALLFILESIN.application-common\" />
     <Folder Include="CommonSCONSIGLIATO-no-dto-no-shared\" />
-    <Folder Include="UseCases\Auth\Login\Loaders\" />
   </ItemGroup>
 
 </Project>
