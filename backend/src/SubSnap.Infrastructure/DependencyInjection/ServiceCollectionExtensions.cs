@@ -6,7 +6,11 @@ using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Application.Ports.Persistence;
 using SubSnap.Application.Ports.Services;
 using SubSnap.Application.UseCases.Auth;
+using SubSnap.Application.UseCases.Auth.Login;
+using SubSnap.Application.UseCases.Auth.Logout;
+using SubSnap.Application.UseCases.Auth.RefreshToken;
 using SubSnap.Application.UseCases.Users;
+using SubSnap.Application.UseCases.Users.RegisterUser;
 using SubSnap.Infrastructure.DataLoaders;
 using SubSnap.Infrastructure.Identity.Services;
 using SubSnap.Infrastructure.Persistence.Context;
@@ -30,11 +34,19 @@ public static class ServiceCollectionExtensions
         //quando qualcuno chiede IUserRepository, la DI darà un’istanza concreta di UserRepository
         services.AddScoped<IUserRepository, UserRepository>();  //!!!repositories
         services.AddScoped<IUnitOfWork, EFUnitOfWork>();     //!!!unit of work
-        services.AddScoped<IUserService, UserService>();     //!!!application services
         services.AddScoped<IPasswordHasherService, AspNetPasswordHasherService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
-        services.AddScoped<AuthHandler>(); //non serve interfaccia x utilizzarlo xk non attravera i BOUNDARIES, è un servizio che rimane interno a .Infrastructure, non lo chiama nessun altro prj.
         services.AddScoped<IUserAggregateLoader, UserAggregateLoader>();
+
+        //services.AddScoped<AuthHandler>(); //non serve interfaccia x utilizzarlo xk non attravera i BOUNDARIES, è un servizio che rimane interno a .Infrastructure, non lo chiama nessun altro prj.
+        //Auth
+        services.AddScoped<LoginHandler>();
+        services.AddScoped<LogoutHandler>();
+        services.AddScoped<RTHandler>();
+
+        //User
+        //services.AddScoped<IUserService, UserService>();     //!!!application services
+        services.AddScoped<RUHandler>();
 
         return services;
         //scoped: una nuova istanza per ogni richiesta HTTP, condivisa all’interno della stessa richiesta. Perfetto x DbContext e servizi che lavorano con esso.

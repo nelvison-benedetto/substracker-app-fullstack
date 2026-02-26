@@ -8,7 +8,7 @@ namespace SubSnap.Application.UseCases.Users.RegisterUser;
 
 //no EF, no DBO 
 //transazione controllata, orchestration pulita
-public class RUHandler : IUserService
+public class RUHandler //: IUserService non serve xk  
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -49,7 +49,7 @@ public class RUHandler : IUserService
     //    );
     //}
 
-    public async Task<UserResult> RegisterAsync(RUCommand command, CancellationToken ct)
+    public async Task<RUResult> Handle(RUCommand command, CancellationToken ct)
     {
         // 1️⃣ Email unique
         var existing =
@@ -67,7 +67,7 @@ public class RUHandler : IUserService
         // 4️⃣ Persist
         await _userRepository.AddAsync(user, ct);
         await _unitOfWork.SaveChangesAsync();
-        return new UserResult(
+        return new RUResult(
             user.Id.Value,
             user.Email.Value
         );
