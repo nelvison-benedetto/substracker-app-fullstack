@@ -40,7 +40,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequestAuth request, CancellationToken ct)
+    public async Task<IActionResult> LoginAsync([FromBody] LoginRequestAuth request, CancellationToken ct)
     {
         var email = new Email(request.Email);  //validation
         //var (access, refresh) = await _authHandler.LoginAsync(email, request.Password,ct); OLD
@@ -58,7 +58,7 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout([FromBody] LogoutRequestAuth request, CancellationToken ct)
+    public async Task<IActionResult> LogoutAsync([FromBody] LogoutRequestAuth request, CancellationToken ct)
     {
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
@@ -76,7 +76,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh(
+    public async Task<IActionResult> RefreshAsync(
     [FromBody] RefreshTokenRequestAuth request, CancellationToken ct)
     {
         //var (access, refresh) =

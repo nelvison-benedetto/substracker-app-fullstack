@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using SubSnap.API.Contracts.Auth.Requests;
+using SubSnap.API.Contracts.Users.Requests;
 using SubSnap.Application.UseCases.Auth.Login;
 using SubSnap.Application.UseCases.Auth.RefreshToken;
+using SubSnap.Application.UseCases.Users.RegisterUser;
 namespace SubSnap.API.Mapping;
 
 public sealed class RequestToCommandProfile : Profile  //Profile è classe di AutoMapper che contiene tutte le regole di mapping 
@@ -19,6 +21,10 @@ public sealed class RequestToCommandProfile : Profile  //Profile è classe di Au
 
         CreateMap<RefreshTokenRequestAuth, RTCommand>()
             .ConstructUsing(src => new RTCommand(src.RefreshToken));
+
+        CreateMap<RegisterUserRequest, RUCommand>();
+        //non necessario fare .ConstructUsing() xk properties matchano stesso nome & no value objects (e.g.no Email Email)
+
 
     }
     //CreateMap<RegisterUserRequest, RUCommand>();

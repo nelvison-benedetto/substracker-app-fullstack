@@ -21,7 +21,7 @@ public static class ValidatorHelper
             throw new FluentValidation.ValidationException(result.Errors); //questo verra poi catturato da tuo custom in ExceptionMiddlewareExtensions.cs e formattato in una ApiError correttamenet da restituire al client
         }
     }
-
+    
     public static void ValidateCommand<T>(IValidator<T> validator, T command) //IValidator<T> è il validator da usare e.g.RegisterUserValidator, T command l'obj da validare!
     {
         ValidationResult result = validator.Validate(command);

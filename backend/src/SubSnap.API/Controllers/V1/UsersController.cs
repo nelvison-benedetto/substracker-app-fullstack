@@ -2,7 +2,8 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using SubSnap.API.Contracts.Responses;
-using SubSnap.API.Contracts.Users;
+using SubSnap.API.Contracts.Users.Requests;
+using SubSnap.API.Contracts.Users.Responses;
 using SubSnap.API.Validators;
 using SubSnap.Application.Ports.Users;
 using SubSnap.Application.UseCases.Users.RegisterUser;
@@ -29,19 +30,23 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("register")]
-    [ProducesResponseType(typeof(ApiResult<UserResponse>), StatusCodes.Status200OK)] //questi servono agli sviluppatori per capire / OpenAPI / Swagger x status code http x this method.
+    [ProducesResponseType(typeof(ApiResult<RegisterUserResponse>), StatusCodes.Status200OK)] //questi servono agli sviluppatori per capire / OpenAPI / Swagger x status code http x this method.
     [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ApiResult<UserResponse>>> Register(RegisterUserRequest request, CancellationToken ct)
+    public async Task<ActionResult<ApiResult<RegisterUserResponse>>> RegisterUserAsync(RegisterUserRequest request, CancellationToken ct)
     {
         var command = _mapper.Map<RUCommand>(request);
         await ValidatorHelper.ValidateCommandAsync(_validator, command);
-        var result = await _userService.RegisterAsync(command, ct);
-        var response = _mapper.Map<UserResponse>(result);  //see .api/mapping/resulttoresponseprofile.cs
-        return Ok(ApiResult<UserResponse>.Ok(response));
+        var result = await _ruHandler.HandleAsync(command, ct);
+        var response = _mapper.Map<RegisterUserResponse>(result);  //see .api/mapping/resulttoresponseprofile.cs
+        return Ok(ApiResult<RUResult>.Ok(response));
         //qualsiasi cosa tu metta dentro Ok(...) verrà serializzata in JSON come body della risposta HTTP
     }
 
+    //[HttpPost("register")]
+    //[ProducesResponseType(typeof(ApiResult<UserResponse>), StatusCodes.Status200OK)] //questi servono agli sviluppatori per capire / OpenAPI / Swagger x status code http x this method.
+    //[ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status500InternalServerError)]
     //public async Task<ActionResult<ApiResult<UserResponse>>> Register( RegisterUserRequest request , CancellationToken ct)
     //{
     //    // Request -> Command mapping
