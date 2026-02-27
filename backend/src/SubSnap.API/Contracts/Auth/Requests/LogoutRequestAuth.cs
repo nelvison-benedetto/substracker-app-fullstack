@@ -1,4 +1,4 @@
-﻿namespace SubSnap.API.Contracts.Auth;
+﻿namespace SubSnap.API.Contracts.Auth.Requests;
 
 public sealed class LogoutRequestAuth
 {

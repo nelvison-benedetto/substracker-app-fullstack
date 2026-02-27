@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SubSnap.API.Contracts.Auth;
+using SubSnap.API.Contracts.Auth.Requests;
 using SubSnap.API.Contracts.Responses;
 using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.Users;

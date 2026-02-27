@@ -8,6 +8,7 @@ public sealed class ResultToResponseProfile : Profile  //Profile è classe di Au
     {
         //CreateMap<From, To>()
         
+
     }
     //CreateMap<UserResult, UserResponse>();
     //e nel controller puoi fare e.g. var response = _mapper.Map<UserResponse>(result); (result è di type UserResult)

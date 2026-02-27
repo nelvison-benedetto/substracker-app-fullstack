@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SubSnap.API.Contracts.Auth;
+using SubSnap.API.Contracts.Auth.Requests;
 using SubSnap.API.Contracts.Users;
 using SubSnap.Application.UseCases.Auth.Login;
 using SubSnap.Application.UseCases.Auth.Logout;
@@ -18,8 +18,10 @@ public sealed class RequestToCommandProfile : Profile  //Profile è classe di Au
                 src.Password
                 ));
         //devi esplicitare come convertire xk Email di LoginCommand è un value object!
+        //ed eviti anche bug silenziosi e.g.quando rinomini properties!!
 
-        CreateMap<RefreshTokenRequestAuth, RTCommand>();
+        CreateMap<RefreshTokenRequestAuth, RTCommand>()
+            .ConstructUsing(src => new RTCommand(src.RefreshToken));
 
     }
     //CreateMap<RegisterUserRequest, RUCommand>();
