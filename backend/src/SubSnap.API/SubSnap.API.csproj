@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\NewFolder\" />
-    <Folder Include="Contracts\Requests\" />
     <Folder Include="Contracts\Users\Responses\" />
     <Folder Include="Contracts\Users\Requests\" />
     <Folder Include="Filters\Authorization\" />

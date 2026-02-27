@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using SubSnap.API.Contracts.Auth.Requests;
-using SubSnap.API.Contracts.Users;
 using SubSnap.Application.UseCases.Auth.Login;
-using SubSnap.Application.UseCases.Auth.Logout;
 using SubSnap.Application.UseCases.Auth.RefreshToken;
-using SubSnap.Application.UseCases.Users.RegisterUser;
 namespace SubSnap.API.Mapping;
 
 public sealed class RequestToCommandProfile : Profile  //Profile è classe di AutoMapper che contiene tutte le regole di mapping 

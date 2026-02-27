@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SubSnap.API.Contracts.Auth.Requests;
@@ -11,7 +10,6 @@ using SubSnap.Application.UseCases.Auth.Login;
 using SubSnap.Application.UseCases.Auth.Logout;
 using SubSnap.Application.UseCases.Auth.RefreshToken;
 using SubSnap.Core.Domain.ValueObjects;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
