@@ -15,7 +15,7 @@ public class Subscription
     protected Subscription() { }  //constructor!!
 
     public Subscription(
-        SubscriptionId? id,
+        //SubscriptionId? id,
         string name,
         decimal amount,
         string billingCycle,
@@ -23,7 +23,7 @@ public class Subscription
         DateOnly? endDate,
         string? category)
     {
-        Id = id;
+        Id = SubscriptionId.New();
         Name = name;
         Amount = amount;
         BillingCycle = billingCycle;

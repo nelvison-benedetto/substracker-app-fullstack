@@ -4,13 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Application.Ports.Persistence;
-using SubSnap.Application.Ports.Services;
 using SubSnap.Application.Ports.Users;
-using SubSnap.Application.UseCases.Auth;
 using SubSnap.Application.UseCases.Auth.Login;
 using SubSnap.Application.UseCases.Auth.Logout;
 using SubSnap.Application.UseCases.Auth.RefreshToken;
-using SubSnap.Application.UseCases.Users;
 using SubSnap.Application.UseCases.Users.RegisterUser;
 using SubSnap.Infrastructure.DataLoaders;
 using SubSnap.Infrastructure.Identity.Services;
@@ -47,8 +44,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRUHandler, RUHandler>();
 
         //User
-        //services.AddScoped<IUserHandler-oldService, UserHandler-oldService>();     //OLD now all in .application.usecases
-        services.AddScoped<RUHandler>();
+        //services.AddScoped<IUserHandlerOldService, UserHandlerOldService>();     //OLD now all in .application.usecases
+        services.AddScoped< IRUHandler,RUHandler>();
 
         return services;
         //scoped: una nuova istanza per ogni richiesta HTTP, condivisa all’interno della stessa richiesta. Perfetto x DbContext e servizi che lavorano con esso.

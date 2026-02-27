@@ -36,7 +36,7 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<ApiResult<RegisterUserResponse>>> RegisterUserAsync(RegisterUserRequest request, CancellationToken ct)
     {
         var command = _mapper.Map<RUCommand>(request);
-        //await ValidatorHelper.ValidateCommandAsync(_validator, command);
+        //await ValidatorHelper.ValidateCommandAsync(_validator, command); E' POCO CLEAN, il controller non dovrebbe conoscere la validation
         var result = await _ruHandler.HandleAsync(command, ct);
         var response = _mapper.Map<RegisterUserResponse>(result);  //see .api/mapping/resulttoresponseprofile.cs
         return Ok(ApiResult<RegisterUserResponse>.Ok(response));
