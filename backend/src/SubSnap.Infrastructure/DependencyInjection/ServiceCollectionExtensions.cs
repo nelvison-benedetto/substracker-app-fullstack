@@ -4,11 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Application.Ports.Persistence;
-using SubSnap.Application.Ports.Users;
-using SubSnap.Application.UseCases.Auth.Login;
-using SubSnap.Application.UseCases.Auth.Logout;
-using SubSnap.Application.UseCases.Auth.RefreshToken;
-using SubSnap.Application.UseCases.Users.RegisterUser;
 using SubSnap.Infrastructure.DataLoaders;
 using SubSnap.Infrastructure.Identity.Services;
 using SubSnap.Infrastructure.Persistence.Context;
@@ -47,7 +42,7 @@ public static class ServiceCollectionExtensions
         //services.AddScoped<IUserHandlerOldService, UserHandlerOldService>();     //OLD now all in .application.usecases
         //services.AddScoped< IRUHandler,RUHandler>();
 
-        //!!!NON PIU NECESSARI GLI Ixxx degli handlers bc ora w 'services.AddMediatR(...)' (.application.dependencyinjection.dependencyinjection.cs) FA AUTO SCAN ASSEMBLY -> trova Ixxxhandler ->  registra xxxhandler.!!!  uso PLUGIN MediatR
+        //!!!NON PIU NECESSARI GLI Ixxx degli handlers bc ora PLUGIN MEDIATR w 'services.AddMediatR(...)' (.application.dependencyinjection.dependencyinjection.cs) FA AUTO SCAN ASSEMBLY -> trova Ixxxhandler ->  registra xxxhandler.!!!  uso PLUGIN MediatR
 
 
         return services;

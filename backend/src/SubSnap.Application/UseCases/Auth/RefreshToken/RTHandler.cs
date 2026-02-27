@@ -27,7 +27,7 @@ public sealed class RTHandler : IRequestHandler<RTCommand, RTResult>
         _uow = uow;
     }
 
-    public async Task<RTResult> Handle( RTCommand command, CancellationToken ct )
+    public async Task<RTResult> Handle( RTCommand command, CancellationToken ct )  //chiamato 'Handle' obbligatorio x plugin MediatR
     {
         var user = await _userRepository.FindByRefreshTokenAsync(
             command.RefreshToken, ct)

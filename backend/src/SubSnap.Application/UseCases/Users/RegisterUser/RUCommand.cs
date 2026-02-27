@@ -16,4 +16,6 @@ namespace SubSnap.Application.UseCases.Users.RegisterUser;
 //public sealed record RUCommand(string Email, string Password);
 
 //uso MediatR x validazione auto!! 
+
+
 public sealed record RUCommand(string Email, string Password) : IRequest<RUResult>;  // MediatR, specifica che questo comando richiede un risultato di tipo RUResult. In questo modo, quando lo invii al MediatR, sa che deve aspettarsi un RUResult come risposta!

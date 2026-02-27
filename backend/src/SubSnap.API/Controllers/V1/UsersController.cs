@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using SubSnap.API.Contracts.Responses;
 using SubSnap.API.Contracts.Users.Requests;
 using SubSnap.API.Contracts.Users.Responses;
-using SubSnap.Application.Ports.Users;
 using SubSnap.Application.UseCases.Users.RegisterUser;
 
 namespace SubSnap.API.Controllers.V1;

@@ -5,7 +5,7 @@ namespace SubSnap.API.Validators;
 
 //Validator vive solo nell’API, non tocca Domain, Repository o DB!
 //perfect che valida il Command
-//FluentValidation è libreria che ti evita di scrivere a mano e.g. if (string.IsNullOrEmpty(request.Email)){return BadRequest("Email required")};
+//PLUGIN FLUENTVALIDATION è libreria che ti evita di scrivere a mano e.g. if (string.IsNullOrEmpty(request.Email)){return BadRequest("Email required")};
 /*
  HTTP Request → mapped to RUCommand → validator controlla RUCommand, .Application ricevera solo dati gia validati!!
  */

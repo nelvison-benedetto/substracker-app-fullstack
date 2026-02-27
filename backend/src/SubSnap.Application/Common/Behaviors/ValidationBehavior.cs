@@ -11,7 +11,7 @@ namespace SubSnap.Application.Common.Behaviors;
  */
 
 public sealed class ValidationBehavior<TRequest, TResponse>  
-    : IPipelineBehavior<TRequest, TResponse>  //intercetta ogni request mediatr
+    : IPipelineBehavior<TRequest, TResponse>  //intercetta ogni request MediatR
     where TRequest : notnull
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;  //.net cosi automaticmnete trova e.g. RegisterUserValidator : AbstractValidator<RUCommand> (.api.validators.X) e LO INIETTA

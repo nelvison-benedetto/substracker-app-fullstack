@@ -1,8 +1,10 @@
-﻿using SubSnap.Application.UseCases.Auth.Logout;
+﻿//using SubSnap.Application.UseCases.Auth.Logout;
 
-namespace SubSnap.Application.Ports.Auth;
+//namespace SubSnap.Application.Ports.Auth;
 
-public interface ILogoutHandler
-{
-    Task HandleAsync(LogoutCommand command, CancellationToken ct);
-}
+//public interface ILogoutHandler
+//{
+//    Task HandleAsync(LogoutCommand command, CancellationToken ct);
+//}
+
+//ora uso plugin MediatR!
