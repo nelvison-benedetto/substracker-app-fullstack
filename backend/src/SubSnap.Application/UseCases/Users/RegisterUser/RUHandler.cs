@@ -1,15 +1,19 @@
-﻿using SubSnap.Application.Ports.Auth;
+﻿using MediatR;
+using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.Persistence;
-using SubSnap.Application.Ports.Users;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.Exceptions;
 using SubSnap.Core.Domain.ValueObjects;
+using MediatR;
 
 namespace SubSnap.Application.UseCases.Users.RegisterUser;
 
 //no EF, no DBO 
 //transazione controllata, orchestration pulita
-public class RUHandler : IRUHandler 
+
+//public class RUHandler : IRUHandler 
+public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x MediatR(validazione automatica!)
+
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -50,7 +54,8 @@ public class RUHandler : IRUHandler
     //    );
     //}
 
-    public async Task<RUResult> HandleAsync(RUCommand command, CancellationToken ct)
+    public async Task<RUResult> Handle(RUCommand command, CancellationToken ct)  
+        //MediatR vuole che si chiami 'Handle' non 'HandleAsync'
     {
         // 1️⃣ Email unique
         var existing =
@@ -67,7 +72,7 @@ public class RUHandler : IRUHandler
         );
         // 4️⃣ Persist
         await _userRepository.AddAsync(user, ct);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(ct);  //sempre propagare il token!!serve e.g.se utente spegne il cellulare!
         return new RUResult(
             user.Id.Value,
             user.Email.Value
