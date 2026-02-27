@@ -2,6 +2,8 @@
 using SubSnap.API.Contracts.Auth;
 using SubSnap.API.Contracts.Users;
 using SubSnap.Application.UseCases.Auth.Login;
+using SubSnap.Application.UseCases.Auth.Logout;
+using SubSnap.Application.UseCases.Auth.RefreshToken;
 using SubSnap.Application.UseCases.Users.RegisterUser;
 namespace SubSnap.API.Mapping;
 
@@ -15,9 +17,9 @@ public sealed class RequestToCommandProfile : Profile  //Profile è classe di Au
                 new Core.Domain.ValueObjects.Email(src.Email),
                 src.Password
                 ));
-          //devi esplicitare come convertire xk Email è un value object!
+        //devi esplicitare come convertire xk Email di LoginCommand è un value object!
 
-
+        CreateMap<RefreshTokenRequestAuth, RTCommand>();
 
     }
     //CreateMap<RegisterUserRequest, RUCommand>();

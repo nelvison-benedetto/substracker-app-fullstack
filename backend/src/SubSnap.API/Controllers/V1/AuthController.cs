@@ -8,6 +8,7 @@ using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.Users;
 using SubSnap.Application.UseCases.Auth.Login;
 using SubSnap.Application.UseCases.Auth.Logout;
+using SubSnap.Application.UseCases.Auth.RefreshToken;
 using SubSnap.Core.Domain.ValueObjects;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
@@ -68,7 +69,7 @@ public class AuthController : ControllerBase
         var command = new LogoutCommand( 
             new UserId(Guid.Parse(userIdClaim)),
             request.RefreshToken
-        );
+        );  //qui non uso il mapper xk non hanno un match diretto (in LogoutCommand ho anche Userid che lo trovo here non mi arriva direttamente da http)
         await _logoutHandler.HandleAsync(command, ct);
         return Ok();
     }
@@ -77,13 +78,14 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Refresh(
     [FromBody] RefreshTokenRequestAuth request, CancellationToken ct)
     {
-        var (access, refresh) =
-            await _authHandler.RefreshAsync(request.RefreshToken, ct);
-
+        //var (access, refresh) =
+        //    await _authHandler.RefreshAsync(request.RefreshToken, ct);
+        var command = _mapper.Map<RTCommand>(request);
+        var result = await _rtHandler.HandleAsync(command, ct);
         return Ok(ApiResult<object>.Ok(new
         {
-            accessToken = access,
-            refreshToken = refresh
+            accessToken = result.AccessToken,
+            refreshToken = result.RefreshToken
         }));
     }
 
