@@ -36,19 +36,18 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IUserAggregateLoader, UserAggregateLoader>();
 
-        //services.AddScoped<AuthHandler-oldService>(); //non serve interfaccia x utilizzarlo xk non attravera i BOUNDARIES, è un servizio che rimane interno a .Infrastructure, non lo chiama nessun altro prj.
+        //services.AddScoped<AuthHandlerOldService>(); //non serve interfaccia x utilizzarlo xk non attravera i BOUNDARIES, è un servizio che rimane interno a .Infrastructure, non lo chiama nessun altro prj.
         //Auth
 
         //services.AddScoped<ILoginHandler, LoginHandler>();
         //services.AddScoped<ILogoutHandler, LogoutHandler>();
         //services.AddScoped<IRTHandler, RTHandler>();
         //services.AddScoped<IRUHandler, RUHandler>();
-
         //User
         //services.AddScoped<IUserHandlerOldService, UserHandlerOldService>();     //OLD now all in .application.usecases
         //services.AddScoped< IRUHandler,RUHandler>();
 
-        //NON PIU NECESSARI GLI Ixxx degli handlers bc ora w 'services.AddMediatR(...)' (.application.dependencyinjection.dependencyinjection.cs) FA AUTO SCAN ASSEMBLY -> trova Ixxxhandler ->  registra xxxhandler.!!! 
+        //!!!NON PIU NECESSARI GLI Ixxx degli handlers bc ora w 'services.AddMediatR(...)' (.application.dependencyinjection.dependencyinjection.cs) FA AUTO SCAN ASSEMBLY -> trova Ixxxhandler ->  registra xxxhandler.!!!  uso PLUGIN MediatR
 
 
         return services;
