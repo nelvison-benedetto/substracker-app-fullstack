@@ -6,6 +6,8 @@ namespace SubSnap.Application.Common.Behaviors;
 /*
  * MediarR lavora come un middleware .net, ma dentro prj .Application! 
  * intercetta datas prima che arrivano agli HANDLERs (di UseCases).
+ * 
+ * await _mediator.Send(command) -> passa attraverso questa pipeline di comportamenti (tra cui questo ValidationBehavior) -> arriva all'handler target del comando.
  */
 
 public sealed class ValidationBehavior<TRequest, TResponse>  
