@@ -4,6 +4,9 @@ using System.Diagnostics;
 
 namespace SubSnap.Application.Common.Behaviors;
 
+/*
+ * MONITORA TUTTO! come fa Uber. se un handler impiega troppo tempo, lo logga come warning.
+ */
 public sealed class PerformanceBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
 {

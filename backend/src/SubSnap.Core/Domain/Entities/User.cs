@@ -1,10 +1,12 @@
-﻿using SubSnap.Core.Domain.ValueObjects;
+﻿using SubSnap.Core.Domain.Common;
+using SubSnap.Core.Domain.Events.Users;
+using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Core.Domain.Entities;
 
 //user domain semplice (no ICollection no EF no navigation props), w no list of SharedLink e Subscription 
 //rappresentare concetti di business, contenere logica (es. ChangeEmail, Login()), essere indipendente da EF, SQL, Docker, VPS
-public class User
+public class User : AggregateRoot  //aggregateroot x domain events
 {
     private readonly List<RefreshToken> _refreshTokens = new();  //private xk SOLO user puo modificcarli, quindi i refreshtokens fanno parte dell'aggregate user!!(non hanno un lifecycle indipendente, non hanno un Repository proprio, non possono vivere senza user!!)
     
@@ -39,6 +41,7 @@ public class User
         IsActive = true;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
+        Raise(new UserRegisteredEvent(Id));  //domain event, xk è successo qualcosa di importante, e voglio che il resto del sistema ne sia consapevole (e.g. inviare email di benvenuto, loggare, ecc): il DOMAIN NON INVIA e.g.Email! dice solo 'user registered'
     }
     
     //internal void SetId(UserId id)  //IMPORTANTISSISMO! xk ti serve x obj entity-->domain obj

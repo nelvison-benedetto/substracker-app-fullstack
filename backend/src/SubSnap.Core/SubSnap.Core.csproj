@@ -10,7 +10,6 @@
     <Folder Include="AbstractionsOLDNOWALLIN.application-ports\Clock\" />
     <Folder Include="AbstractionsOLDNOWALLIN.application-ports\Messaging\" />
     <Folder Include="ContractsOLDNOWALLIN.application-ports\External\" />
-    <Folder Include="Domain\Events\" />
     <Folder Include="Domain\Constants\" />
     <Folder Include="Domain\Specifications\" />
     <Folder Include="DTOsOLDNOWISIN.Application_dontdeletebackup\Shared\" />
@@ -23,6 +22,10 @@
     <Folder Include="HelpersGeneric\Result\" />
     <Folder Include="ServicesOLDNOWALLINtargets\DomainOLD%28neverused%29\" />
     <Folder Include="ServicesOLDNOWALLINtargets\ValidatorsOLD%28neverused%29\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="14.0.0" />
   </ItemGroup>
 
 </Project>
