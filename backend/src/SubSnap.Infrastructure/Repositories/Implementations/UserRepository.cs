@@ -127,7 +127,7 @@ public class UserRepository : IUserRepository
             subscriptionsTask.Result,
             sharedLinksTask.Result);
     }
-
+    
     public async Task<UserSubscriptionsAggregate?> LoadUserWithSubscriptionsAsync(UserId userId, CancellationToken ct)
     {
         var user = await _context.Users

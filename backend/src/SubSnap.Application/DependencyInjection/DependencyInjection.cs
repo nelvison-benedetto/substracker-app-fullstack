@@ -18,17 +18,18 @@ public static class DependencyInjection
     {
         var assembly = Assembly.GetExecutingAssembly();
 
-        // MEDIATR
+        //MediatR
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssembly(assembly));
 
-        // FLUENT VALIDATION
+        //FluentValidation
         services.AddValidatorsFromAssembly(assembly);
 
-        // PIPELINE
-        services.AddTransient(
-            typeof(IPipelineBehavior<,>),
-            typeof(ValidationBehavior<,>));
+        //pipeline behaviours (order is important!) x MediatR!
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        //transient xk ogni .Send() nell'hadler, crea nuova istanza di X behavior. quindi NO scoped bc quella creerebbe solo 1 istanza x http req (però poi all'interno magari devi fare multipli Send() !!)
 
         return services;
     }
