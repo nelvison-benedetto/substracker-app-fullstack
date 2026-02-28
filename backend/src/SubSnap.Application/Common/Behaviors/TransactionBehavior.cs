@@ -5,6 +5,7 @@ namespace SubSnap.Application.Common.Behaviors;
 
 /*
  * eviti di fare SaveChangesAsync in ogni handler, ma lo fai in un unico punto centrale, con questo pipeline behavior!
+ * da aggiungere su dependencyinjection.cs (.application level)
  */
 
 public sealed class TransactionBehavior<TRequest, TResponse>

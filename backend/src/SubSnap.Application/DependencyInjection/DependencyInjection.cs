@@ -29,6 +29,9 @@ public static class DependencyInjection
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
+        //DEVO ANCHE AGGIUNGERE PerformanceBehaviour???TODO
+
         //transient xk ogni .Send() nell'hadler, crea nuova istanza di X behavior. quindi NO scoped bc quella creerebbe solo 1 istanza x http req (però poi all'interno magari devi fare multipli Send() !!)
 
         return services;
