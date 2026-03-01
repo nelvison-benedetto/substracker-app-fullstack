@@ -50,6 +50,7 @@ public sealed class OutboxProcessor : BackgroundService
             var messages = await db.OutboxMessages
                 .Where(x => x.ProcessedOnUtc == null)
                 .Take(20)
+                .OrderBy(x => x.OccurredOnUtc)
                 .ToListAsync(stoppingToken);
             //lettura outbox, prendi i primi 20 messaggi non processati (processedOnUtc == null), così eviti di sovraccaricare il sistema se ci sono molti messaggi da processare
 
