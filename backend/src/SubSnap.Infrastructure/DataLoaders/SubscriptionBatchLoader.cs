@@ -43,6 +43,10 @@ public sealed class SubscriptionBatchLoader
         UserId userId,
         CancellationToken ct = default)
     {
+        _logger.LogDebug(
+            "Batch request queued for UserId {UserId}",
+            userId.Value);
+
         var key = userId.Value;
 
         var tcs = _pending.GetOrAdd(
