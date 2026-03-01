@@ -25,8 +25,8 @@ builder.Services.AddHealthChecksConfiguration();
 //validators. OLD now in .application uso plugin MediatR + plugin FluentValidation per validazione automatica, per non dover ogni volta esplicitare nel code. see more validationbehaviour.cs dependencyinjection.cs
 //builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
 
-// AutoMapper (FIX AMBIGUITÀ)
-builder.Services.AddAutoMapper(typeof(Program).Assembly);  //tieni solo plugin Automapper e togli plugin AutomapperExtension.ect xk seno c'è ambiguita x c# se usi 'AddAutoMapper'
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(Program).Assembly);  //here uso plugin Automapper, non plugin AutomapperExtension.ect altrimenti x c# c'è ambiguita x 'AddAutoMapper()'.
 
 //.Application layer (BEFORE .infrastructure layer!)
 builder.Services.AddApplication();
