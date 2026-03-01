@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.ValueObjects;
@@ -21,6 +22,7 @@ public sealed class SubscriptionBatchLoader
     : ISubscriptionBatchLoader
 {
     private readonly IDbContextFactory<ApplicationDbContext> _factory;
+    private readonly ILogger<SubscriptionBatchLoader> _logger;
 
     private readonly ConcurrentDictionary<Guid,
         TaskCompletionSource<IReadOnlyList<Subscription>>> _pending
@@ -30,9 +32,12 @@ public sealed class SubscriptionBatchLoader
     private readonly object _lock = new();
 
     public SubscriptionBatchLoader(
-        IDbContextFactory<ApplicationDbContext> factory)
+        IDbContextFactory<ApplicationDbContext> factory,
+        ILogger<SubscriptionBatchLoader> logger
+    )
     {
         _factory = factory;
+        _logger = logger;
     }
     public Task<IReadOnlyList<Subscription>> Load(
         UserId userId,

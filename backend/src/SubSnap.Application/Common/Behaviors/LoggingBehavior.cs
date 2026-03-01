@@ -57,6 +57,7 @@ public sealed class LoggingBehavior<TRequest, TResponse>
         var response = await next();  //continua la pipeline...
 
         sw.Stop();
+
         _logger.LogInformation(
             "Handled {RequestName} in {ElapsedMs}ms",
             requestName,
