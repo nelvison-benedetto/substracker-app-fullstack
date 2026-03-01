@@ -7,6 +7,23 @@ namespace SubSnap.Application.Common.Behaviors;
 /*
  * MONITORA TUTTO! come fa Uber. se un handler impiega troppo tempo, lo logga come warning.
  * cosi identifichi gli handlers lenti!
+  
+ depedencyinjection.cs (.application level)
+quando fai
+await _mediator.Send(command) la pipeline (grazie a method Handle) è
+ Controller
+   ↓
+ValidationBehavior
+   ↓
+LoggingBehavior
+   ↓
+PerformanceBehavior
+   ↓
+TransactionBehavior
+   ↓
+ExceptionBehavior
+   ↓
+Handler
  */
 public sealed class PerformanceBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>

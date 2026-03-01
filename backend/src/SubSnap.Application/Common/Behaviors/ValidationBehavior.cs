@@ -7,8 +7,9 @@ namespace SubSnap.Application.Common.Behaviors;
 MediarR lavora come un middleware .net, ma dentro prj .Application! 
 intercetta datas prima che arrivano agli HANDLERs (di UseCases).
 
+depedencyinjection.cs (.application level)
 quando fai
-await _mediator.Send(command) accade pipeline (grazie a method Handle)
+await _mediator.Send(command) la pipeline (grazie a method Handle) è
  Controller
    ↓
 ValidationBehavior

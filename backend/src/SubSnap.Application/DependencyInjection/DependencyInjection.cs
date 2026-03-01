@@ -25,7 +25,7 @@ public static class DependencyInjection
         //FluentValidation
         services.AddValidatorsFromAssembly(assembly);
 
-        //pipeline behaviours (order is important!) x MediatR!
+        //pipeline BEHAVIORS (order is important!) x MediatR!
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));

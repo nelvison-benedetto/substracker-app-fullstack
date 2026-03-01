@@ -8,6 +8,23 @@ namespace SubSnap.Application.Common.Behaviors;
 ora ogni volta che un handler viene usato nel log appare 
         Handling RegisterUserCommand
         Handled RegisterUserCommand in 45ms
+
+depedencyinjection.cs (.application level)
+quando fai
+await _mediator.Send(command) la pipeline (grazie a method Handle) è
+ Controller
+   ↓
+ValidationBehavior
+   ↓
+LoggingBehavior
+   ↓
+PerformanceBehavior
+   ↓
+TransactionBehavior
+   ↓
+ExceptionBehavior
+   ↓
+Handler
  */
 
 public sealed class LoggingBehavior<TRequest, TResponse>

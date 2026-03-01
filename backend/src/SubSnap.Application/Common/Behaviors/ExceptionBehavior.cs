@@ -9,6 +9,23 @@ namespace SubSnap.Application.Common.Behaviors;
  * services.AddTransient(
         typeof(IPipelineBehavior<,>),
         typeof(XXXBehavior<,>));
+
+depedencyinjection.cs (.application level)
+quando fai
+await _mediator.Send(command) la pipeline (grazie a method Handle) è
+ Controller
+   ↓
+ValidationBehavior
+   ↓
+LoggingBehavior
+   ↓
+PerformanceBehavior
+   ↓
+TransactionBehavior
+   ↓
+ExceptionBehavior
+   ↓
+Handler
  */
 public sealed class ExceptionBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
