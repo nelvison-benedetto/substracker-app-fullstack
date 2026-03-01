@@ -20,8 +20,7 @@ var tasks = users.Select(u =>
 var subscriptions = await Task.WhenAll(tasks);
  */
 
-public sealed class SubscriptionBatchLoader
-    : ISubscriptionBatchLoader
+public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
 {
     private readonly IDbContextFactory<ApplicationDbContext> _factory;
     private readonly ILogger<SubscriptionBatchLoader> _logger;
