@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 namespace SubSnap.Core.Domain.Events.Users;
 
 public sealed class UserRegisteredHandler
-    : INotificationHandler<UserRegisteredEvent>
+    : INotificationHandler<UserRegisteredEvent>  //subscriber
 {
     private readonly ILogger<UserRegisteredHandler> _logger;
 
@@ -20,7 +20,7 @@ public sealed class UserRegisteredHandler
     {
         _logger.LogInformation(
             "User {UserId} registered",
-            notification.UserId.Value);  //NON CONCATENARE W '+', ALTRIMENTI ILLEGGIBILE xk diventa pura str!!
+            notification.UserId.Value);  //NON CONCATENARE W '+', ALTRIMENTI ILLEGGIBILE xk diventa pura str, ora ok leggibile da plugin OpenTelemetry!!
         //internamente diventa {"message": "User registered", "UserId": "123","level": "Information"}
         //e quindi nei logs puoi fare query e.g. UserId=123 per filtrare
 

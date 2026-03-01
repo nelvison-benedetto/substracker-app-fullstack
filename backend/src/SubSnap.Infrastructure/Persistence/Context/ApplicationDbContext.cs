@@ -10,7 +10,7 @@ public class ApplicationDbContext : DbContext
         : base(options) { }
 
     public DbSet<User> Users => Set<User>();  //solo la root dell'aggregate deve essere esposto al dbset.
-    public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
+    public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();  //x outbox pattern!!
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
