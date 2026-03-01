@@ -10,11 +10,11 @@ public sealed class UserRegisteredEvent : IDomainEvent  //implementa IDomainEven
 {
     public UserId UserId { get; }
 
-    public DateTime OccurredOnUtc { get; }
-        = DateTime.UtcNow;
+    public DateTime OccurredOnUtc { get; } = DateTime.UtcNow;
 
     public UserRegisteredEvent(UserId userId)
     {
         UserId = userId;
     }
+
 }
