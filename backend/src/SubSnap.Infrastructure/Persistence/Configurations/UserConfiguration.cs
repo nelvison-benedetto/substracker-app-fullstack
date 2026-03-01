@@ -7,7 +7,8 @@ namespace SubSnap.Infrastructure.Persistence.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    
+    //ANCHE OutboxMessage HA BISOGNO DI UNA ..CONFIGURATION?? INFO
+
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("users");
