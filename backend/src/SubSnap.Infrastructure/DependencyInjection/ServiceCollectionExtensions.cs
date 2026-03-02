@@ -13,6 +13,8 @@ using SubSnap.Infrastructure.Repositories.Implementations;
 
 namespace SubSnap.Infrastructure.DependencyInjection;
 
+//see applicationdbcontext.cs  servicecollectionextensions.cs  dependencyinjection.cs
+
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructure(  // custom extension x IServiceCollection (la collezione di servizi della DI di ASP.NET Core)

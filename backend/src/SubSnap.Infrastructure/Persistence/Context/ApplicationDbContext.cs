@@ -4,6 +4,8 @@ using SubSnap.Infrastructure.Persistence.Outbox;
 
 namespace SubSnap.Infrastructure.Persistence.Context;
 
+//see applicationdbcontext.cs  servicecollectionextensions.cs  dependencyinjection.cs
+
 public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -16,4 +18,5 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
+
 }

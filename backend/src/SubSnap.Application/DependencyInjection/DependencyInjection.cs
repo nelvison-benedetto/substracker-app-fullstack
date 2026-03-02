@@ -7,6 +7,8 @@ using System.Reflection;
 
 namespace SubSnap.Application.DependencyInjection;
 
+//see applicationdbcontext.cs  servicecollectionextensions.cs  dependencyinjection.cs
+
 /*
  SEPARATA DA .infrastructure.dependencyinjection.servicecollectionextensions bc .infrastructure NON DEVE CONOSCERE implementazioni in .application!  va bene se conosce le sue ports e.g.IUserRepository.cs perche intanto poi la vera implementazione rimane dentro .infrastructure (e.g.UserRepository.cs). 
 
