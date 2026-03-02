@@ -32,7 +32,7 @@ public static class ExceptionMiddlewareExtensions
             {
                 context.Response.ContentType = "application/json";
                 var exception = context.Features
-                    .Get<IExceptionHandlerFeature>()?.Error; //.net ti passa l'exception non gestita
+                    .Get<IExceptionHandlerFeature>()?.Error; //.NET TI PASSA L'EXCEPTION NON GESTITA (CHE PROVIENE DA ExceptionBehvior.cs)
                 if (exception is null) return;
                 var (statusCode, message) = exception switch
                 {

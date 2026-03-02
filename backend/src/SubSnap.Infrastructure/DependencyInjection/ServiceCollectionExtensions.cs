@@ -43,10 +43,10 @@ public static class ServiceCollectionExtensions
         //services.AddScoped<IRTHandler, RTHandler>();
         //services.AddScoped<IRUHandler, RUHandler>();
         //User
-        //services.AddScoped<IUserHandlerOldService, UserHandlerOldService>();     //OLD now all in .application.usecases
-        //services.AddScoped< IRUHandler,RUHandler>();
+        //services.AddScoped<IUserHandlerOldService, UserHandlerOldService>();     //OLD now all in .application/usecases
 
-        //!!!NON PIU NECESSARI GLI Ixxx degli handlers bc ora PLUGIN MEDIATR w 'services.AddMediatR(...)' (.application.dependencyinjection.dependencyinjection.cs) FA AUTO SCAN ASSEMBLY -> trova Ixxxhandler ->  registra xxxhandler.!!!  uso PLUGIN MediatR
+        //services.AddScoped< IRUHandler,RUHandler>();
+        //non piu necessario IRUhandler perche ora usi RUCommand : IRequest<RUResult> e RUHandler : IRequestHandler<RUCommand, RUResult> usando plugin MediatR (mediatr diventa il dispatcher)
 
         //services.AddScoped<IEventDispatcher, MediatREventDispatcher>(); //ora uso Outboxprocessor x dispatcher outbox pattern.
         services.AddScoped<ISubscriptionBatchLoader, SubscriptionBatchLoader>(); //addscoped bc 1 http req = 1 batch window

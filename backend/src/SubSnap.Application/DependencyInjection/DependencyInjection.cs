@@ -16,8 +16,7 @@ Poi lo aggiungi direttamente nel Program.cs.
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(
-        this IServiceCollection services)
+    public static IServiceCollection AddApplication( this IServiceCollection services )
     {
         var assembly = Assembly.GetExecutingAssembly();
 

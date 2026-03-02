@@ -49,13 +49,13 @@ public sealed class ExceptionBehavior<TRequest, TResponse>
         {
             _logger.LogWarning(ex,
                 "Domain error for {Request}", typeof(TRequest).Name);  //coloro in giallo, è un warning, non un error. è un'eccezione di dominio, non un'eccezione di sistema.
-            throw; // rilancio l'eccezione, altrimenti il comportamento successivo non sa che è successo un errore. se non rilancio, il comportamento successivo pensa che tutto sia andato bene, e continua a eseguire il codice, ma in realtà c'è stato un errore.
+            throw; //ORA INTERCETTATO DA ExceptionMiddlewareExtensions.cs
         }
         catch (Exception ex)
         {
             _logger.LogError(ex,
                 "Unhandled error for {Request}", typeof(TRequest).Name);  //coloro in rosso, è un error, non un warning. è un'eccezione di sistema, non un'eccezione di dominio.
-            throw;
+            throw;  // ORA INTERCETTATO DA ExceptionMiddlewareExtensions.c
         }
     }
 }
