@@ -10,7 +10,7 @@ ora ogni volta che un handler viene usato nel log appare
         Handled RegisterUserCommand in 45ms
 
 depedencyinjection.cs (.application level)
-quando fai
+quando fai nel usercontroller.cs
 await _mediator.Send(command) la pipeline (grazie a method Handle) è
  Controller
    ↓

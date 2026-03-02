@@ -8,7 +8,7 @@ MediarR lavora come un middleware .net, ma dentro prj .Application!
 intercetta datas prima che arrivano agli HANDLERs (di UseCases).
 
 depedencyinjection.cs (.application level)
-quando fai
+quando fai nel usercontroller.cs
 await _mediator.Send(command) la pipeline (grazie a method Handle?) è
 PIPELINE
  Controller

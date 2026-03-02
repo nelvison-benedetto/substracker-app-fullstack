@@ -11,6 +11,23 @@ namespace SubSnap.Application.UseCases.Users.RegisterUser;
 
 //no EF, no DBO 
 //transazione controllata, orchestration pulita
+/*
+ * quando fai nel usercontroller.cs
+await _mediator.Send(command) la pipeline (grazie a method Handle) è
+ Controller
+   ↓
+ValidationBehavior
+   ↓
+LoggingBehavior
+   ↓
+PerformanceBehavior
+   ↓
+TransactionBehavior
+   ↓
+ExceptionBehavior
+   ↓
+Handler
+ */
 
 //public class RUHandler : IRUHandler 
 public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin MediatR(validazione automatica!) (works w fluentvalidation)
@@ -18,7 +35,7 @@ public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin
 
 {
     private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;  //non piu necessario, ora centralizzato in transactionbehvior.cs
     private readonly IPasswordHasherService _passwordHasherService;
 
     public RUHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasherService passwordHasherService)

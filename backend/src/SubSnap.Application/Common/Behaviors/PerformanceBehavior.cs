@@ -9,7 +9,7 @@ namespace SubSnap.Application.Common.Behaviors;
  * cosi identifichi gli handlers lenti!
   
  depedencyinjection.cs (.application level)
-quando fai
+quando fai nel usercontroller.cs
 await _mediator.Send(command) la pipeline (grazie a method Handle) è
  Controller
    ↓

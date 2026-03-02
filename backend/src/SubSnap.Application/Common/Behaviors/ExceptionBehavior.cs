@@ -11,7 +11,7 @@ namespace SubSnap.Application.Common.Behaviors;
         typeof(XXXBehavior<,>));
 
 depedencyinjection.cs (.application level)
-quando fai
+quando fai nel usercontroller.cs
 await _mediator.Send(command) la pipeline (grazie a method Handle) è
  Controller
    ↓

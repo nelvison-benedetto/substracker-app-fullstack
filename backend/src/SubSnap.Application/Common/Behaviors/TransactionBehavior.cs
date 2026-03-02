@@ -7,7 +7,7 @@ namespace SubSnap.Application.Common.Behaviors;
  * eviti di fare SaveChangesAsync in ogni handler, ma lo fai in un unico punto centrale, con questo pipeline behavior! cosi handler diventa pure orchestration.
   
 depedencyinjection.cs (.application level)
-quando fai
+quando fai nel usercontroller.cs
 await _mediator.Send(command) la pipeline (grazie a method Handle) è
  Controller
    ↓
