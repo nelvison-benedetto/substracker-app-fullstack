@@ -43,8 +43,8 @@ public sealed class EFUnitOfWork : IUnitOfWork
 
         //extract domain events from tracked entities
         var domainEvents = _context.ChangeTracker
-            .Entries<AggregateRoot>()  //tiene traccia di tutte le entità modificate
-            .SelectMany(e => e.Entity.DomainEvents)  //ottieni tutti gli eventi di dominio dalle entità modificate. e.g. SEI ARRIVATO QUI DOPO UN await _userRepository.AddAsync(user, ct); 
+            .Entries<AggregateRoot>()  //CHANGETRACKER, dice 'dammi tutte le entità tracciate che derivano da AggregateRoot'
+            .SelectMany(e => e.Entity.DomainEvents)
             .ToList();
 
         //clear domain events
@@ -59,7 +59,7 @@ public sealed class EFUnitOfWork : IUnitOfWork
             var message = new OutboxMessage  //crei un nuovo obj per ciascun domain event trovato
             {
                 Id = Guid.NewGuid(),
-                Type = domainEvent.GetType().AssemblyQualifiedName!,  //CONVERT domain event -->  OUTBOX ROW type(outboxmessage.cs), in questo modo quando lo leggo posso capire di che tipo di evento si tratta e deserializzarlo correttamente. usi AssemblyQualifiedName non invece .Name (fallirebbe in produzione)!!
+                Type = domainEvent.GetType().AssemblyQualifiedName!,  //CONVERT domain event -->  OUTBOX ROW type(outboxmessage.cs), in questo modo quando lo leggo posso capire di che tipo di evento si tratta e deserializzarlo correttamente. usi AssemblyQualifiedName non invece .Name (fallirebbe in produzione!!)
                 Payload = JsonSerializer.Serialize(
                     domainEvent,
                     domainEvent.GetType()),

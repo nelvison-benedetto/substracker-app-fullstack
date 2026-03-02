@@ -27,6 +27,21 @@ TransactionBehavior
 ExceptionBehavior
    ↓
 Handler
+//plugin MediatR costruisce dinamicamente la pipeline usando reflrection, quindi cerca sermpe Handle(...) !!
+COME FUNZIONA CON NEXT/RETURN RESPONSE NELLA PIPELINE
+TransactionBehavior entra
+↓
+await next()
+    ↓
+    RUHandler.Handle()
+        AddAsync(user)
+        (NO SAVE)
+    ↑ ritorna
+↓
+SaveChangesAsync()   ← QUI
+↓
+response
+//quindi transactionbehavior(che lancierà EFunitofwork!) circonda exceptionbehavior che circonda a sua volta handler!! cipolla.
  */
 
 //public class RUHandler : IRUHandler 
@@ -90,11 +105,11 @@ public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin
             passwordHash
         );
         // 4️⃣ Persist
-        await _userRepository.AddAsync(user, ct);  //!!LO REGISTRO SOLO here,
-        //ORA IL SAVECHANGES ACCADE IN TransactionBehavior.cs. see now!
+        await _userRepository.AddAsync(user, ct);  //e quindi nel repository fa _context.Users.Add(user); ora ef sta tracciando  ChangeTracker: User (State=Added) e tiene riferimento all'istanza. e dentro il constrct di user.cs hai Raise(new UserRegisteredEvent(...)); quindi ef ora ha  User.DomainEvents = [ UserRegisteredEvent ]. ef sta tracciando lo stesso obj, QUINDI CHANGETRACKER vede anche gli eventi! quegli eventi poi li estrarrai in efunitofwork.cs
         //see User.cs  transactionbehavior.cs efunitofwork.cs  outboxprocessor.cs
 
         //await _unitOfWork.SaveChangesAsync(ct);  //sempre propagare il token!!serve e.g.se utente spegne il cellulare! OLD, now is in transactionbehaviour.cs
+
         return new RUResult(
             user.Id.Value,
             user.Email.Value

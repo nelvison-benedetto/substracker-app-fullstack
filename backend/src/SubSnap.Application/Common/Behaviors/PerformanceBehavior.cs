@@ -38,7 +38,7 @@ await next()
 SaveChangesAsync()   ← QUI
 ↓
 response
-//quindi transactionbehavior circonda exceptionbehavior che circonda a sua volta handler!! cipolla.
+//quindi transactionbehavior(che lancierà EFunitofwork!) circonda exceptionbehavior che circonda a sua volta handler!! cipolla.
  */
 public sealed class PerformanceBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
