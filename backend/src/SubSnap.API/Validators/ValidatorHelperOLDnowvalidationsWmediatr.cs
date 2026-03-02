@@ -31,4 +31,4 @@
 //    }
 //}
 
-//ORA INVECE USO PLUGIN MediatR (x validazione automatica, per non dover ogni volta esplicitare nel code) + plugin fluentvalidation. see more validationbehaviour.cs dependencyinjection.cs
+//ORA INVECE USO PLUGIN MediatR (x validazione automatica, per non dover ogni volta esplicitare nel code) + plugin fluentvalidation. SEE MORE validationbehaviour.cs dependencyinjection.cs

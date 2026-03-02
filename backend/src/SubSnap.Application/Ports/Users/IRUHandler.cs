@@ -7,4 +7,4 @@
 //    Task<RUResult> HandleAsync(RUCommand command, CancellationToken ct);
 //}
 
-//ora uso plugin MediatR!
+//NON PIU NECESSARIO, see comments in servicecollectionextensions.cs

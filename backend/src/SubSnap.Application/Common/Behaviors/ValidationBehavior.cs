@@ -25,6 +25,7 @@ ExceptionBehavior
    ↓
 Handler
  */
+//see validationbehaviour.cs  dependencyinjection.cs  validationextensions.cs
 
 public sealed class ValidationBehavior<TRequest, TResponse>  
     : IPipelineBehavior<TRequest, TResponse>  //intercetta ogni command/query MediatR

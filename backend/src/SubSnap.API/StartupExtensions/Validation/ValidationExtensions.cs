@@ -14,10 +14,10 @@ public static class ValidationExtensions
             options.SuppressModelStateInvalidFilter = true;
         });
 
-        //FluentValidation - Registra tutti i validator dell'assembly API!! necessario xk poi in validationbehavior.cs dovrai iniettare i validators(e.g.registeruservalidator.cs)
         services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
+        //SCANSIONA TUTTO L'ASSEMBLY(e.g. .API) dove si trova RegisterUserValidator.cs, E REGISTRA TUTTI I validators trovati!!! necessario xk validationbehavior.cs DOVRA INIETTARE I VALIDATORS (e.g.)
 
         return services;
     }
-    //se also API/Validators/ValidatorHelper.cs, e nel controller usi  'await ValidatorHelper.ValidateCommandAsync(_validator, command);'
+
 }
