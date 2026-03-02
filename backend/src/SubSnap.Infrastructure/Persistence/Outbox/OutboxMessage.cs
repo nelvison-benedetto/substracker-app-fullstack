@@ -1,8 +1,9 @@
 ﻿namespace SubSnap.Infrastructure.Persistence.Outbox;
 
 /*
- * tabella su db. serve per persistence
+tabella su db. serve per persistence.
  */
+//see User.cs  transactionbehavior.cs efunitofwork.cs  outboxprocessor.cs outboxmessage.cs
 
 public sealed class OutboxMessage
 {

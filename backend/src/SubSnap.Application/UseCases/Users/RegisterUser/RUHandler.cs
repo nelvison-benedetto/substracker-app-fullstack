@@ -106,7 +106,7 @@ public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin
         );
         // 4️⃣ Persist
         await _userRepository.AddAsync(user, ct);  //e quindi nel repository fa _context.Users.Add(user); ora ef sta tracciando  ChangeTracker: User (State=Added) e tiene riferimento all'istanza. e dentro il constrct di user.cs hai Raise(new UserRegisteredEvent(...)); quindi ef ora ha  User.DomainEvents = [ UserRegisteredEvent ]. ef sta tracciando lo stesso obj, QUINDI CHANGETRACKER vede anche gli eventi! quegli eventi poi li estrarrai in efunitofwork.cs
-        //!!see User.cs  transactionbehavior.cs efunitofwork.cs  outboxprocessor.cs outboxmessage.cs
+        //see User.cs  transactionbehavior.cs  efunitofwork.cs  outboxprocessor.cs outboxmessage.cs
 
         //await _unitOfWork.SaveChangesAsync(ct);  //sempre propagare il token!!serve e.g.se utente spegne il cellulare! OLD, now is in transactionbehaviour.cs
 

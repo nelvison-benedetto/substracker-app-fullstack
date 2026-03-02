@@ -41,6 +41,8 @@ public sealed class EFUnitOfWork : IUnitOfWork
         //!!OUTBOX PATTERN. e.g. vuoi fare Saved Used + Send Email, quindi devi fare le 2 operazioni insime perche la prima non puo essere DONE senza la seconda, altrimenti hai inconsistenza della transazione! Quindi invece di inviare direttamente l'email, salvi un record in un Outbox table, e poi un processo separato legge da quella tabella e invia le email. In questo modo, anche se l'invio dell'email fallisce, il record rimane nell'Outbox e può essere ritentato.
         //EF tiene traccia di tutte le entità che sono state modificate, quindi puoi facilmente estrarre gli eventi di dominio dalle entità modificate e salvarli nella tabella Outbox insieme alle modifiche dello stato, garantendo così la consistenza della transazione.
 
+        //see User.cs  transactionbehavior.cs  efunitofwork.cs  outboxprocessor.cs outboxmessage.cs
+
         //extract domain events from tracked entities
         var domainEvents = _context.ChangeTracker
             .Entries<AggregateRoot>()  //CHANGETRACKER, dice 'dammi tutte le entità tracciate che derivano da AggregateRoot'
@@ -67,6 +69,8 @@ public sealed class EFUnitOfWork : IUnitOfWork
             };
             _context.OutboxMessages.Add(message);  //ADD TO DB
         }
+        //HERE SALVO(al savechangesasync()) SOLO IL NUOVO OBJ OUTBOXMESSAGE, CHE DIVENTERA(al savachangesasync) UNA NUOVA ROW SUL DB. POI QUELLE ROW VERRANNO PRESE DA OutboxProcessor.cs ED ESEGUITE(runnano gli eventi targets) ogni 2sec!!
+
         //SINGLE TRANSACTION COMMIT: save both the state changes and the outbox messages together to ensure consistency!!
         await _context.SaveChangesAsync(ct);  //ORA FAI IL DEFINITIVO COMMIT, salvando persistendo l'user added e il/i outboxmessages added. TRANSAZIONE ATOMICA!!
 

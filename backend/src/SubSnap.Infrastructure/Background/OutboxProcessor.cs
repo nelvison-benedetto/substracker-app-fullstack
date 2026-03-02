@@ -1,7 +1,9 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SubSnap.Core.Domain.Events.Users;
 using SubSnap.Infrastructure.Persistence.Context;
 using System.Text.Json;
 
@@ -24,6 +26,9 @@ Background Worker:
    publishes event
 //se email fallisce , il record rimane nell'outbox e può essere ritentato, senza rischiare inconsistenza della transazione
  */
+
+//see User.cs  transactionbehavior.cs efunitofwork.cs  outboxprocessor.cs outboxmessage.cs
+
 public sealed class OutboxProcessor : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
@@ -61,8 +66,8 @@ public sealed class OutboxProcessor : BackgroundService
                 var domainEvent = JsonSerializer.Deserialize( msg.Payload, type );
                 //deserializzazione evento di dominio, così ricostruisci l'evento di dominio originale a partire dal payload JSON salvato nell'outbox
 
-                await _mediator.Publish( (INotification)domainEvent!, ct);
-                //publish evento di dominio usando MediatR, ora MediatR chiama UserRegisteredHandler.cs!!!
+                await _mediator.Publish( (INotification)domainEvent!, ct);  //TROVA TUTTI GLI EVENTHANDLERS REGISTRATI PER QUELL'EVENTO, E LI ESEGUE. e.g. trova tutti gli INotificationHandler<UserRegisteredEvent> e userregisteredhandler.cs hai UserRegisteredHandler : INotificationHandler<UserRegisteredEvent> quindi automaticamente MediatR esegue UserRegisteredHandler.Handle()  !!!
+                  //QUESTO E DA DOVE DAVVERO RUNNI GLI EVENTI!!  
 
                 msg.ProcessedOnUtc = DateTime.UtcNow;  //lo marchi (see OutboxMessage.cs)
             }
