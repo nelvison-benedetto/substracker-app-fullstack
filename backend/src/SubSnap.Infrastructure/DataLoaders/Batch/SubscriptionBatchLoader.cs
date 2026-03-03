@@ -71,16 +71,17 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
             if (_scheduled) return;
             _scheduled = true;
         }
+        //garantisce solo 1 batch running attivo!!
 
-        _ = Task.Run(ExecuteBatch);
+        _ = Task.Run(ExecuteBatch);  //parte in background
     }
 
     private async Task ExecuteBatch()
     {
-        await Task.Delay(5); // batching window
+        await Task.Delay(5); //aspetti 5ms, perche serve un po di tempo x raccogliere le req simultanee. e.g. t=0ms user1 t=1ms user2 t=3ms user3...
 
-        var snapshot = _pending.ToArray();
-        var ids = snapshot.Select(x => x.Key).ToList();
+        var snapshot = _pending.ToArray(); //congeli le req attuali
+        var ids = snapshot.Select(x => x.Key).ToList();  //ora hai e.g. [user1, user2, user3]
 
         await using var db =
             await _factory.CreateDbContextAsync();
@@ -120,7 +121,7 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
                 "Executing subscription batch query for {Count} users",
                 ids.Count);
 
-            var sw = Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();  //x performace monitoring in tempo reale. see performancebehvior.cs
 
             var subs = await db.Set<Subscription>()
                 .Where(s => ids.Contains(EF.Property<Guid>(s, "UserId")))
