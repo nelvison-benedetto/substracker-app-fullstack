@@ -8,9 +8,11 @@ using SubSnap.Infrastructure.Persistence.Context;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 
-namespace SubSnap.Infrastructure.DataLoaders;
+namespace SubSnap.Infrastructure.DataLoaders.Batch;
 
 /*
+ * ottimizza query READS multiple simultanee: N richieste -> 1 query!
+ * 
  * NON SONO query parallele(quer1 - query2 ...tutte in parallelo. Db overload!!)! sono CUNCURRENT BATCHED (requests parallele -> 1 sola query ottimizzata! db happy!!), 
  * 
  * ora invece di :  await repo.GetSubscriptions(user.Id);

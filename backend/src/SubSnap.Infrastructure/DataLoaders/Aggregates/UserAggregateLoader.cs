@@ -5,8 +5,11 @@ using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.ValueObjects;
 using SubSnap.Infrastructure.Persistence.Context;
 
-namespace SubSnap.Infrastructure.DataLoaders;
+namespace SubSnap.Infrastructure.DataLoaders.Aggregates;
 
+/*
+ * 
+ */
 public sealed class UserAggregateLoader : IUserAggregateLoader
 {
     private readonly IDbContextFactory<ApplicationDbContext> _factory;

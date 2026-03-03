@@ -2,8 +2,7 @@
 
 namespace SubSnap.Core.Domain.Aggregates;
 
-//DOMAIN-FIRST approach
-//aggregate esplicito, caricato solo quando serve!
+//user + subscriptions composizione a runtime (non esiste sul db). aggregate esplicito, caricato solo quando serve!
 public class UserSubscriptionsAggregate
 {
     public User User { get; }
