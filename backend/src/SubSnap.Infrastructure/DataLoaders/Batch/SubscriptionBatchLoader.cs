@@ -13,13 +13,25 @@ namespace SubSnap.Infrastructure.DataLoaders.Batch;
 /*
  * ottimizza query READS multiple simultanee: N richieste -> 1 query!
  * 
- * NON SONO query parallele(quer1 - query2 ...tutte in parallelo. Db overload!!)! sono CUNCURRENT BATCHED (requests parallele -> 1 sola query ottimizzata! db happy!!), 
+ * NON SONO query parallele(quer1 - query2 ...tutte in parallelo. db overload!!)! sono CUNCURRENT BATCHED (requests parallele -> 1 sola query ottimizzata! db happy!!), 
  * 
- * ora invece di :  await repo.GetSubscriptions(user.Id);
- * fai (in handler o orchestrator): 
+ * per utilizzarlo fai 
 var tasks = users.Select(u =>
     _subscriptionLoader.Load(u.Id, ct));
 var subscriptions = await Task.WhenAll(tasks);
+
+viene chiamato dall'handler.
+Handler / Orchestrator
+       ↓
+SubscriptionBatchLoader.Load(userId)
+       ↓
+pending dictionary
+       ↓ (5ms)
+ExecuteBatch()
+       ↓
+SELECT ... WHERE UserId IN (...)
+
+see  getuserswithsubscriptionshandler.cs  useraggregateloader.cs  subscriptionbatchloader.cs  userrepository.cs
  */
 
 public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
@@ -111,11 +123,11 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
             ?? _httpContextAccessor.HttpContext?.Request.Headers["X-Correlation-Id"].FirstOrDefault()
             ?? Guid.NewGuid().ToString();
 
-        using (_logger.BeginScope(new Dictionary<string, object>
+        using (_logger.BeginScope( new Dictionary<string, object>
         {
             ["CorrelationId"] = correlationId,
             ["Batch"] = "SubscriptionLoader"
-        }))
+        })) //aggiunge auto CorrelationId Batch=SubscriptionLoader a tutti i logs all'interno
         {
             _logger.LogInformation(
                 "Executing subscription batch query for {Count} users",
@@ -142,12 +154,13 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
             {
                 grouped.TryGetValue(id, out var result);
                 tcs.TrySetResult(result ?? new List<Subscription>());
+                //
                 _pending.TryRemove(id, out _);
             }
         }
 
         lock (_lock)
-            _scheduled = false;
+            _scheduled = false; //reset, cosi permette prossimo batch
 
     }
 }

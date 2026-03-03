@@ -36,7 +36,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUnitOfWork, EFUnitOfWork>();     //!!!unit of work
         services.AddScoped<IPasswordHasherService, AspNetPasswordHasherService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
-        services.AddScoped<IUserAggregateLoader, UserAggregateLoader>();
 
         //services.AddScoped<AuthHandlerOldService>(); //non serve interfaccia x utilizzarlo xk non attravera i BOUNDARIES, è un servizio che rimane interno a .Infrastructure, non lo chiama nessun altro prj.
         //Auth
@@ -51,7 +50,9 @@ public static class ServiceCollectionExtensions
         //services.AddScoped< IRUHandler,RUHandler>();
         //non piu necessario IRUhandler perche ora usi RUCommand : IRequest<RUResult> e RUHandler : IRequestHandler<RUCommand, RUResult> usando plugin MediatR (mediatr diventa il dispatcher)
 
-        //services.AddScoped<IEventDispatcher, MediatREventDispatcher>(); //ora uso Outboxprocessor x dispatcher outbox pattern.
+        //services.AddScoped<IEventDispatcher, MediatREventDispatcher>(); //ora uso outboxprocessor x dispatcher outbox pattern.
+
+        services.AddScoped<IUserAggregateLoader, UserAggregateLoader>();
         services.AddScoped<ISubscriptionBatchLoader, SubscriptionBatchLoader>(); //addscoped bc 1 http req = 1 batch window
 
 
