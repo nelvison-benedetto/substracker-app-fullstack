@@ -3,7 +3,19 @@ using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Core.Domain.Aggregates;
 
 namespace SubSnap.Application.UseCases.Users.GetUsersWithSubscriptions;
-
+/*
+ Controller
+   ↓
+MediatR pipelin (behavior, transaction, ect...)
+   ↓
+GUSHandler   ← 🧠 orchestration
+   ↓
+BatchLoader  ← ⚡ performance
+   ↓
+EF Core
+   ↓
+DB
+ */
 public sealed class GUSHandler
     : IRequestHandler<GUSCommand, List<GUSResult>>
 {
