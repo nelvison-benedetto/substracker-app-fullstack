@@ -22,56 +22,58 @@ EF Core
  ↓
 Database
  */
-public sealed class GUSHandler
-    : IRequestHandler<GUSCommand, List<GUSResult>>
-{
-    private readonly ApplicationDbContext _context;
-    private readonly ISubscriptionBatchLoader _batchLoader;
+//CODE VALIDO, DA DECOMMENTARE QUANDO LO VORRAI USARE!!
 
-    public GUSHandler(
-        ApplicationDbContext context,
-        ISubscriptionBatchLoader batchLoader)
-    {
-        _context = context;
-        _batchLoader = batchLoader;
-    }
+//public sealed class GUSHandler
+//    : IRequestHandler<GUSCommand, List<GUSResult>>
+//{
+//    private readonly ApplicationDbContext _context;
+//    private readonly ISubscriptionBatchLoader _batchLoader;
 
-    public async Task<List<GUSResult>> Handle(
-        GUSCommand request,
-        CancellationToken ct)
-    {
-        // 1️⃣ load base entities
-        var users = await _context.Users
-            .AsNoTracking()
-            .ToListAsync(ct);
+//    public GUSHandler(
+//        ApplicationDbContext context,
+//        ISubscriptionBatchLoader batchLoader)
+//    {
+//        _context = context;
+//        _batchLoader = batchLoader;
+//    }
 
-        if (users.Count == 0)
-            return [];
+//    public async Task<List<GUSResult>> Handle(
+//        GUSCommand request,
+//        CancellationToken ct)
+//    {
+//        // 1️⃣ load base entities
+//        var users = await _context.Users
+//            .AsNoTracking()
+//            .ToListAsync(ct);
 
-        // 2️⃣ queue batch requests (NESSUNA QUERY ANCORA!)
-        var subscriptionTasks = users
-            .Select(u => _batchLoader.Load(u.Id, ct))
-            .ToList();
+//        if (users.Count == 0)
+//            return [];
 
-        // 3️⃣ SINGLE SQL QUERY EXECUTED HERE
-        var subscriptionsPerUser =
-            await Task.WhenAll(subscriptionTasks);
+//        // 2️⃣ queue batch requests (NESSUNA QUERY ANCORA!)
+//        var subscriptionTasks = users
+//            .Select(u => _batchLoader.Load(u.Id, ct))
+//            .ToList();
 
-        // 4️⃣ compose aggregates runtime
-        var aggregates = users
-            .Zip(subscriptionsPerUser,
-                (user, subs) =>
-                    new UserSubscriptionsAggregate(user, subs))
-            .ToList();
+//        // 3️⃣ SINGLE SQL QUERY EXECUTED HERE
+//        var subscriptionsPerUser =
+//            await Task.WhenAll(subscriptionTasks);
 
-        // 5️⃣ map to result
-        return aggregates
-            .Select(a =>
-                new GUSResult(
-                    a.User.Id.Value,
-                    a.User.Email.Value,
-                    a.Subscriptions.Count))
-            .ToList();
-    }
+//        // 4️⃣ compose aggregates runtime
+//        var aggregates = users
+//            .Zip(subscriptionsPerUser,
+//                (user, subs) =>
+//                    new UserSubscriptionsAggregate(user, subs))
+//            .ToList();
 
-}
+//        // 5️⃣ map to result
+//        return aggregates
+//            .Select(a =>
+//                new GUSResult(
+//                    a.User.Id.Value,
+//                    a.User.Email.Value,
+//                    a.Subscriptions.Count))
+//            .ToList();
+//    }
+
+//}
