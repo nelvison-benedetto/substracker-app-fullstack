@@ -1,14 +1,14 @@
 ## SUBSNAP BACKEND – ARCHITECTURE & ENGINEERING OVERVIEW
 
-Author: **Nelvison Benedetto**</br>
-Project: SubSnap Backend</br>
-Platform: ASP.NET Core (.NET 8)</br>
-Database: PostgreSQL</br>
-ORM: Entity Framework Core</br>
-Architecture: Clean Architecture + Domain-Driven Design + CQRS</br>
-Style: Domain-First + Vertical Slice Architecture</br>
-Messaging Pattern: MediatR (internal only)</br>
-Maturity Level: Production-grade backend foundation</br>
+- Author: **Nelvison Benedetto**</br>
+- Project: SubSnap Backend</br>
+- Platform: ASP.NET Core (.NET 8)</br>
+- Database: PostgreSQL</br>
+- ORM: Entity Framework Core</br>
+- Architecture: Clean Architecture + Domain-Driven Design + CQRS</br>
+- Style: Domain-First + Vertical Slice Architecture</br>
+- Messaging Pattern: MediatR (internal only)</br>
+- Maturity Level: Production-grade backend foundation</br>
 
 SubSnap is intentionally designed following modern enterprise backend practices inspired by systems used at companies such as Uber, Stripe, Shopify and large-scale ASP.NET Core platforms.
 
