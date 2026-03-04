@@ -13,7 +13,7 @@ Maturity Level: Production-grade backend foundation
 SubSnap is intentionally designed following modern enterprise backend practices inspired by systems used at companies such as Uber, Stripe, Shopify and large-scale ASP.NET Core platforms.
 
 ---
-**.CORE layer**
+### .CORE layer
 Contains pure business logic (no framework logic!), must be runnable without external references.
 
 Contains:
@@ -22,14 +22,14 @@ DOMAIN [Entities, Aggregates, Value Objects, Events, Domain Rules, ...].
 references: NONE!!
 ---
 
-**.APPLICATION layer**
+### .APPLICATION layer
 Contains:
 Behaviors(MediatR pipeline), DependencyInjection (only for .application level), Ports (interfaces), UseCases(slices e.g.Login, Logout,...)(each slice contains Orchestrator(the TRUE entry point), Handler, Command, Result, Policies, Loaders).
 
 references: .Core
 ---
 
-**.INFRASTRUCTURE layer**
+### .INFRASTRUCTURE layer
 Technical implementations.
 Contains:
 EF Core repositories, JWT generation, Password hashing, Entities Configuration, ApplicationDbContext, UnitofWork, DataLoaders(Aggregates & Batch Loaders), DependencyInjection (only for .infrastructure level), Storage(for Hetzner Object media files), OutBox Processor.
@@ -37,7 +37,7 @@ EF Core repositories, JWT generation, Password hashing, Entities Configuration, 
 references: .Application, .Core
 ---
 
-**.API layer**
+### .API layer
 HTTP API only.
 
 Contains:
