@@ -16,6 +16,12 @@ L'obiettivo del progetto non è dimostrare semplicemente l'implementazione di fun
 
 SubSnap rappresenta quindi un blueprint architetturale orientato alla produzione, progettato per evidenziare pattern e principi utilizzati nei sistemi backend di larga scala.
 
+         API
+        /   \
+Application  Infrastructure
+       \    /
+        Core
+
 ---
 ### .CORE layer
 Questo layer contiene **pure business logic** e il **core domain model**.
