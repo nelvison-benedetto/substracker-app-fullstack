@@ -44,7 +44,7 @@ Non contiene logica infrastrutturale, ma definisce contratti (Ports) che dovrann
 Behaviors(MediatR pipeline), DependencyInjection (only for .application level), Ports (interfaces), UseCases(slices e.g.Login, Logout,...)(each slice contains Orchestrator(the TRUE entry point), Handler, Command, Result, Policies, Loaders).
 
 **References**: .Core
---usa il domain in .core e definisce le ports(interfaccie) che .infrastructure implementerà
+usa il domain in .core e definisce le ports(interfaccie) che .infrastructure implementerà
 
 ---
 
@@ -56,7 +56,7 @@ Implementa le interfacce (Ports) definite nell’Application layer ed è responsabi
 EF Core repositories, JWT generation, Password hashing, Entities Configuration, ApplicationDbContext, UnitofWork, DataLoaders(Aggregates & Batch Loaders), DependencyInjection (only for .infrastructure level), Storage(for Hetzner Object media files), OutBox Processor.
 
 **References**: .Application, .Core 
---implementa i Ports definiti in .applicatione e usa le entities del .core
+implementa i Ports definiti in .applicatione e usa le entities del .core
 
 ---
 
@@ -69,7 +69,7 @@ Invocano invece l’Orchestrator del relativo Use Case, mantenendo il layer HTTP s
 Requests & Responses (will match w Command & Result of the target UseCase), Mapping(x auto match request->command & result->response), ApiResult & ApiError (wrapper, for uniformity when return the response to the client), Controllers(don't know MediatR, they call the orchestrator of target usecase), Filters, Middleware(for global exception and correlationid for logging), Startup Extensions (authentication, authorization, correlationid, cors, healthchecks, swagger, validation), Validators(usa plugin Fluent Validator, for rules e.g. email must not be empty), Versioning, Program.cs.
 
 **References**: .Application, .Infrastructure
---chiama gli usescases(only orchestrators) del .application e usa dependencyinjection registrata in .infrastructure
+chiama gli usescases(only orchestrators) del .application e usa dependencyinjection registrata in .infrastructure
 
 ---
 
