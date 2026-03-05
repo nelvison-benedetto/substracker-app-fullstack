@@ -108,22 +108,22 @@ L'architettura del progetto è costruita per supportare evoluzione, crescita del 
 
 Le principali caratteristiche architetturali includono:
 
-### Explicit Transactional Boundaries
+#### Explicit Transactional Boundaries
 I confini transazionali sono definiti esplicitamente all'interno dell'Application Layer, garantendo consistenza dei dati e isolamento delle operazioni critiche.
 
-### Event-Driven Extensibility
+#### Event-Driven Extensibility
 La struttura applicativa è progettata per supportare facilmente un'evoluzione verso modelli event-driven, consentendo integrazioni asincrone e distribuite tra componenti del sistema.
 
-### Stateless API Design
+#### Stateless API Design
 L'API è completamente stateless, facilitando la scalabilità orizzontale tramite bilanciamento del carico e deploy su infrastrutture distribuite.
 
-### Independent Read/Write Models (CQRS mindset)
+#### Independent Read/Write Models (CQRS mindset)
 Le operazioni di lettura e scrittura sono separate concettualmente, permettendo ottimizzazioni indipendenti delle query e maggiore flessibilità nell'evoluzione dei modelli dati.
 
-### Background Processing Ready
+#### Background Processing Ready
 L'architettura è predisposta per l'introduzione di processi asincroni e job in background (es. worker services, code di messaggi, task distribuiti).
 
-### Infrastructure Replaceability
+#### Infrastructure Replaceability
 Le dipendenze infrastrutturali sono completamente astratte, consentendo la sostituzione di componenti tecnici (database, sistemi di storage, provider di autenticazione) senza impattare la logica di dominio.
 
 
