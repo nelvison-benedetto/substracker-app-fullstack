@@ -21,7 +21,7 @@ SubSnap rappresenta quindi un blueprint architetturale orientato alla produzione
         /   \
 Application  Infrastructure
        \    /
-        Core
+        Core[Domain]
 ```
 
 ---
