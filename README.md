@@ -10,20 +10,28 @@
 - Messaging Pattern: MediatR (internal only)
 - Maturity Level: Production-grade backend foundation
 
-SubSnap is intentionally designed following modern enterprise backend practices inspired by systems used at companies such as Uber, Stripe, Shopify and large-scale ASP.NET Core platforms.
+SubSnap è progettato intenzionalmente seguendo pratiche architetturali adottate nei backend moderni ad alta scalabilità, ispirate a piattaforme utilizzate da aziende come Uber, Stripe, Shopify e da sistemi enterprise basati su ASP.NET Core.
+
+L'obiettivo del progetto non è dimostrare semplicemente l'implementazione di funzionalità applicative, ma mostrare un approccio strutturale alla progettazione di backend scalabili, mantenibili ed evolvibili nel tempo.
+
+SubSnap rappresenta quindi un blueprint architetturale orientato alla produzione, progettato per evidenziare pattern e principi utilizzati nei sistemi backend di larga scala.
 
 ---
 ### .CORE layer
-Contains pure business logic (no framework logic!), must be runnable without external references.
+Questo layer contiene **pure business logic** e il **core domain model**.
+È completamente indipendente da framework, infrastruttura o servizi esterni e deve poter essere eseguito in isolamento.
 
 **Contains**:
 DOMAIN [Entities, Aggregates, Value Objects, Events, Domain Rules, ...].
 
-references: NONE!!
+references: NONE
 
 ---
 
 ### .APPLICATION layer
+Questo layer definisce gli **application workflows** e rappresenta il confine tra il dominio e il mondo esterno.
+Non contiene logica infrastrutturale, ma definisce contratti (Ports) che dovranno essere implementati dal layer Infrastructure.
+
 **Contains**:
 Behaviors(MediatR pipeline), DependencyInjection (only for .application level), Ports (interfaces), UseCases(slices e.g.Login, Logout,...)(each slice contains Orchestrator(the TRUE entry point), Handler, Command, Result, Policies, Loaders).
 
@@ -32,7 +40,9 @@ references: .Core
 ---
 
 ### .INFRASTRUCTURE layer
-Technical implementations.
+Questo layer contiene tutte le integrazioni con sistemi esterni, come database, servizi di autenticazione, sistemi di storage e altri componenti infrastrutturali.
+Implementa le interfacce (Ports) definite nell’Application layer ed è responsabile della persistenza dei dati, dei meccanismi di sicurezza e delle integrazioni esterne.
+
 **Contains**:
 EF Core repositories, JWT generation, Password hashing, Entities Configuration, ApplicationDbContext, UnitofWork, DataLoaders(Aggregates & Batch Loaders), DependencyInjection (only for .infrastructure level), Storage(for Hetzner Object media files), OutBox Processor.
 
@@ -41,7 +51,9 @@ references: .Application, .Core
 ---
 
 ### .API layer
-HTTP API only.
+Questo layer espone il sistema tramite endpoint HTTP ed è responsabile della gestione delle richieste, della validazione, della serializzazione e della configurazione dell’API.
+I controller non contengono logica di business e **non dipendono direttamente da MediatR**.
+Invocano invece l’Orchestrator del relativo Use Case, mantenendo il layer HTTP sottile e disaccoppiato dalla pipeline applicativa.
 
 **Contains**:
 Requests & Responses (will match w Command & Result of the target UseCase), Mapping(x auto match request->command & result->response), ApiResult & ApiError (wrapper, for uniformity when return the response to the client), Controllers(don't know MediatR, they call the orchestrator of target usecase), Filters, Middleware(for global exception and correlationid for logging), Startup Extensions (authentication, authorization, correlationid, cors, healthchecks, swagger, validation), Validators(usa plugin Fluent Validator, for rules e.g. email must not be empty), Versioning, Program.cs.
@@ -73,24 +85,33 @@ UseCases/Auth/Login/
 - **CQRS (Command Query Separation)**: WRITE e READ queries hanno business separato, per le Read queries uso Cuncurrent Batched queries, cosi invece di N richieste -> N query, faccio N richieste -> le accumulo -> faccio 1 sola batch query! utilizzato anche da Uber.
 - **Domain Events**: rappresenta un'evento che accade quando succede qualcosa e.g UserRegisteredEvent.cs usato da UserRegisteredHandler.cs che puo fare per esempio logica di invio di email di benvenuto. 
 - **Outbox Pattern (reliable events)**: per assicurarsi di e.g registrare utente + inviare email in una 1 sola transazione(COMMIT) (altrimenti magari la registrazione user ha successo ed è salvato su db, ma poi l'invio email fallisce). quindi Save Aggregate -> Save OutBox message -> COMMIT(salvi su db), dopodiche il background worker outboxprocessor.cs sempre attivo in modalità polling ogni 2sec legge ultime 20 righe della tabella db  outboxmessage (solo quelli non ancora done) e pubblica quegli eventi (e.g. invio email di benvenuto)!
-- **Observality & Logging**: sempre chiaro logging di cosa è appena successo, ogni log fornito di chiara descrizione e di correlationId per poter facilmente tracciare cosa succede in real-time. see loggingbehavior.cs correlationidmiddleware.cs
+- **Observability & Logging**: sempre chiaro logging di cosa è appena successo, ogni log fornito di chiara descrizione e di correlationId per poter facilmente tracciare cosa succede in real-time. see loggingbehavior.cs correlationidmiddleware.cs
 - **Security**: jwt tokens, access tokens, refresh tokens, jwt claims
 - **Media Upload**: su tab db usermedia salvo solo i paths, i media files che l'utente carica vengono salvati su Hetzner Object.
 
-## Perchè questo progetto è scalabile
+## Perché questa architettura è scalabile
 
-Questo progetto è in via di production-oriented backend architecture blueprint.
+L'architettura del progetto è costruita per supportare evoluzione, crescita del dominio e carichi applicativi crescenti senza compromettere la manutenibilità del sistema.
 
-Perchè questa architettura è scalabile
- Explicit transactional boundaries
- Event-driven extensibility
- Stateless API design
- Independent read/write models
- Background processing support
- Infrastructure replaceability
+Le principali caratteristiche architetturali includono:
 
-Each UseCase approximates an internal microservice.
-Production-grade backend foundation.
+### Explicit Transactional Boundaries
+I confini transazionali sono definiti esplicitamente all'interno dell'Application Layer, garantendo consistenza dei dati e isolamento delle operazioni critiche.
+
+### Event-Driven Extensibility
+La struttura applicativa è progettata per supportare facilmente un'evoluzione verso modelli event-driven, consentendo integrazioni asincrone e distribuite tra componenti del sistema.
+
+### Stateless API Design
+L'API è completamente stateless, facilitando la scalabilità orizzontale tramite bilanciamento del carico e deploy su infrastrutture distribuite.
+
+### Independent Read/Write Models (CQRS mindset)
+Le operazioni di lettura e scrittura sono separate concettualmente, permettendo ottimizzazioni indipendenti delle query e maggiore flessibilità nell'evoluzione dei modelli dati.
+
+### Background Processing Ready
+L'architettura è predisposta per l'introduzione di processi asincroni e job in background (es. worker services, code di messaggi, task distribuiti).
+
+### Infrastructure Replaceability
+Le dipendenze infrastrutturali sono completamente astratte, consentendo la sostituzione di componenti tecnici (database, sistemi di storage, provider di autenticazione) senza impattare la logica di dominio.
 
 
 ## SUBSNAP FRONTEND – ARCHITECTURE & ENGINEERING OVERVIEW
@@ -99,7 +120,8 @@ ReactJs, Typescript, TailwindCSS, React-Query, React-Redux, React-Router, DaisyU
 
 ## SUBSNAP DATABASE – ARCHITECTURE & ENGINEERING OVERVIEW
 
-<span style="color:gray">Abilita estensione per UUID</span>
+```
+-- Abilita estensione per UUID
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 <span style="color:gray">Tabella users</span>
@@ -251,3 +273,4 @@ CREATE TABLE usermedia (
 );
 
 CREATE INDEX ix_usermedia_userid ON usermedia(userid);
+```
