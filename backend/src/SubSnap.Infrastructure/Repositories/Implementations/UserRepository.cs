@@ -59,7 +59,8 @@ public class UserRepository : IUserRepository
         //ora hai un token valido, devi trovare il user collegato
         return await _context.Users
             .FirstOrDefaultAsync(
-                u => u.Id == EF.Property<UserId>(token, "UserId"),  //legge la shadow key!
+                u => u.Id == EF.Property<UserId>(token, "UserId"),  //legge la SHADOW KEY(la trovi nei xxxconfiguration e serve a legare le entitites e.g. subscriptions->user)!
+                  //significa User.Id == RefreshToken.UserId solo che RefreshToken.UserId è la shadowkey
                 ct);
     }
 

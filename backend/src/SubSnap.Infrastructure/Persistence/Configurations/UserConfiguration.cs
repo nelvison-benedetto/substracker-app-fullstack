@@ -63,7 +63,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder
             .HasMany<RefreshToken>("_refreshTokens")  //lo trovi in User.cs, (stai passando una str non una property!, queindi ef fa 'ok, cerco un FIELD privato chiamato _refreshTokens' e lo usa direttamente)
             .WithOne()  //ogni refresh token ha un solo user
-            .HasForeignKey("UserId")  //la FK è la shadow property
+            .HasForeignKey("UserId")  //la FK è la SHADOW KEY!!
             .IsRequired()  //un token non può esistere senza user
             .OnDelete(DeleteBehavior.Cascade);  //se elimini user, cancelli tutti i suoi refresh token
 

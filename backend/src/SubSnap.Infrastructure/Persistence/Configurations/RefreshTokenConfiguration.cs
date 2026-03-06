@@ -34,7 +34,7 @@ public class RefreshTokenConfiguration
 
 
         builder.Property<Guid>("UserId")
-            .HasColumnName("userid"); //SHADOW FK (domain non la conosce), esiste solo dentro EF non dentro le classi c#!! FK verso User. la puoi usare nelle quesri w e.g. EF.Property<Guid>(s, "UserId")
+            .HasColumnName("userid"); //SHADOW FK (domain non la conosce), esiste solo dentro EF non dentro le classi c#!! FK verso User. la puoi usare nelle queeri w e.g. EF.Property<Guid>(s, "UserId")
         builder.HasIndex("UserId");
         builder.HasIndex(x => x.Token)
             .IsUnique();  //ogni refresh token deve essere univoco nel DB

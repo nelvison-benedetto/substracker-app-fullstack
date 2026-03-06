@@ -45,7 +45,6 @@ public sealed class RTHandler : IRequestHandler<RTCommand, RTResult>
         user.RevokeRefreshToken(token);
 
         var newAccess = _jwtTokenService.GenerateAccessToken(user);
-
         var newRefreshRaw = _jwtTokenService.GenerateRefreshToken();
         var newRefreshHash = _passwordHasherService.Hash(newRefreshRaw);
 
@@ -53,7 +52,7 @@ public sealed class RTHandler : IRequestHandler<RTCommand, RTResult>
             newRefreshHash.Value,
             DateTime.UtcNow.AddDays(30));
 
-        await _uow.SaveChangesAsync(ct);
+        //await _uow.SaveChangesAsync(ct); ora lo faccio nel transactionbehavior.cs durante la risalita verso il controller.
 
         return new RTResult(newAccess, newRefreshRaw);
     }
