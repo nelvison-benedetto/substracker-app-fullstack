@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SubSnap.Application.Ports.Persistence;
 using SubSnap.Application.UseCases.Auth.Logout.Loaders;
 using SubSnap.Application.UseCases.Auth.Logout.Policies;
 
@@ -74,16 +73,14 @@ public sealed class LogoutHandler : IRequestHandler<LogoutCommand> //x plugin Me
 
     private readonly UserByIdLoader _loader;
     private readonly LogoutTokenPolicy _policy;
-    private readonly IUnitOfWork _uow;
+    //private readonly IUnitOfWork _uow;
 
     public LogoutHandler(
         UserByIdLoader loader,
-        LogoutTokenPolicy policy,
-        IUnitOfWork uow)
+        LogoutTokenPolicy policy)
     {
         _loader = loader;
         _policy = policy;
-        _uow = uow;
     }
     public async Task Handle( LogoutCommand command, CancellationToken ct)
     {

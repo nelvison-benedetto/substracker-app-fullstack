@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
 namespace SubSnap.Application.UseCases.Users.DeleteUser;
 
-internal class DeleteUserCommand
-{
-}
+public sealed record DeleteUserCommand(string userId) : IRequest;

@@ -18,7 +18,6 @@
     <Folder Include="CommonSCONSIGLIATO-no-dto-no-shared\" />
     <Folder Include="UseCases\Auth\RefreshToken\Loaders\" />
     <Folder Include="UseCases\Auth\RefreshToken\Policies\" />
-    <Folder Include="UseCases\Users\DeleteUser\Loaders\" />
     <Folder Include="UseCases\Users\DeleteUser\Policies\" />
     <Folder Include="UseCases\Users\RegisterUser\Loaders\" />
     <Folder Include="UseCases\Users\RegisterUser\Policies\" />

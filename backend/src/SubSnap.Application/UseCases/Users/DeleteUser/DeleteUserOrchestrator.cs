@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SubSnap.Application.UseCases.Users.GetUsersWithSubscriptions;
 
 namespace SubSnap.Application.UseCases.Users.DeleteUser;
 
@@ -16,9 +15,10 @@ public sealed class DeleteUserOrchestrator
         _mediator = mediator;
     }
 
-    public Task<List<GUSResult>> Execute(
+    public Task Execute(
+        DeleteUserCommand command,
         CancellationToken ct = default)
     {
-        return _mediator.Send(new DeleteUserCommand(), ct);  //QUI PARTE TUTTA LA PIPELINE mediatr cioe TUTTI I BEHAVIORS...fino all'handler!!
+        return _mediator.Send(command, ct);  //QUI PARTE TUTTA LA PIPELINE mediatr cioe TUTTI I BEHAVIORS...fino all'handler!!
     }
 }
