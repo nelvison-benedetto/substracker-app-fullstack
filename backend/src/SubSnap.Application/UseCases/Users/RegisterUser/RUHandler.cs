@@ -50,13 +50,14 @@ public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin
 
 {
     private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;  //non piu necessario INFOOO, ora centralizzato in transactionbehvior.cs
+    //private readonly IUnitOfWork _unitOfWork;  //non piu necessario INFOOO, ora centralizzato in transactionbehvior.cs
     private readonly IPasswordHasherService _passwordHasherService;
 
-    public RUHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasherService passwordHasherService)
+    public RUHandler(
+        IUserRepository userRepository, 
+        IPasswordHasherService passwordHasherService)
     {
         _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
         _passwordHasherService = passwordHasherService;
     }
 
@@ -100,10 +101,7 @@ public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin
         // 2️⃣ HASH PASSWORD (IMPORTANTISSIMO)
         var passwordHash = _passwordHasherService.Hash(command.Password);
         // 3️⃣ Create domain entity
-        var user = new User(
-            new Email(command.Email),
-            passwordHash
-        );
+        var user = new User( new Email(command.Email), passwordHash );
         // 4️⃣ Persist
         await _userRepository.AddAsync(user, ct);  //e quindi nel repository fa _context.Users.Add(user); ora ef sta tracciando  ChangeTracker: User (State=Added) e tiene riferimento all'istanza. e dentro il constrct di user.cs hai Raise(new UserRegisteredEvent(...)); quindi ef ora ha  User.DomainEvents = [ UserRegisteredEvent ]. ef sta tracciando lo stesso obj, QUINDI CHANGETRACKER vede anche gli eventi! quegli eventi poi li estrarrai in efunitofwork.cs
         //see User.cs  transactionbehavior.cs  efunitofwork.cs  outboxprocessor.cs outboxmessage.cs
