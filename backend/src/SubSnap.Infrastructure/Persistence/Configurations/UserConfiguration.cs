@@ -5,9 +5,21 @@ using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Infrastructure.Persistence.Configurations;
 
+/*
+User (Aggregate Root)
+   └── RefreshToken
+refreshtoken(anche se ha un tab propria sul db) non vive senza user.
+Quindi qua user è l' aggregate root, e solo lui puo avere il repository ed è il punto di accesso per refreshtoken.
+
+Subscription (Aggregate Root)
+   └── SubscriptionHistory
+subscription puo essere modificato senza toccare user, quindi è un aggregate root anche lui!
+
+E TRA GLI AGGREGATE ROOTS usi cmnq le FK (shadow) per legarli!!
+ */
+
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("users");

@@ -22,14 +22,6 @@ public sealed class UserMediaConfiguration
             .HasColumnType("uuid")
             .ValueGeneratedNever();
 
-        //builder.Property(x => x.UserId)
-        //    .HasColumnName("userid")
-        //    .HasConversion(
-        //        id => id.Value,
-        //        v => new UserId(v))
-        //    .HasColumnType("uuid")
-        //    .IsRequired();
-
         builder.Property<Guid>("UserId")  //SHADOW FK
             .HasColumnName("userid")
             .IsRequired();
@@ -49,5 +41,14 @@ public sealed class UserMediaConfiguration
             .HasColumnName("uploadedat")
             .HasColumnType("timestamptz(3)")
             .IsRequired();
+
+
+        //x relazione User->Subscription ma senza navigation property(che è un problema xk non è loosing)!!
+        builder
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey("UserId")
+            .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

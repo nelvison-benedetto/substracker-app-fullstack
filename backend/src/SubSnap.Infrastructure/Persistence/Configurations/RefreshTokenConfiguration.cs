@@ -32,6 +32,11 @@ public class RefreshTokenConfiguration
             .HasColumnName("isrevoked")
             .IsRequired();
 
+        builder.Property(x => x.CreatedAt)
+            .HasColumnName("createdat")
+            .HasColumnType("timestamptz(3)")  //w timezone!
+            .IsRequired();
+
 
         builder.Property<Guid>("UserId")
             .HasColumnName("userid"); //SHADOW FK (domain non la conosce), esiste solo dentro EF non dentro le classi c#!! FK verso User. la puoi usare nelle queeri w e.g. EF.Property<Guid>(s, "UserId")

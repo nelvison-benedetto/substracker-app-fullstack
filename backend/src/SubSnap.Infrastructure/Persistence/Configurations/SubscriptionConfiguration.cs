@@ -5,6 +5,10 @@ using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Infrastructure.Persistence.Configurations;
 
+/*
+ * SCONSIGLIATO FARE PIU DI 1 LIVELLO NESTED, 
+ */
+
 public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
 {
     public void Configure(EntityTypeBuilder<Subscription> builder)
@@ -23,7 +27,7 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
 
         builder.Property<Guid>("UserId")  //SHADOW FK (domain non la conosce), esiste solo dentro EF non dentro le classi c#!! fk verso User. la puoi usare nelle quesri w e.g. EF.Property<Guid>(s, "UserId")
             .HasColumnName("userid")
-            .IsRequired();  
+            .IsRequired();  //sempre required!!
 
         builder.Property(x => x.Name)
             .HasColumnName("name")
@@ -50,6 +54,16 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
         builder.Property(x => x.Category)
             .HasColumnName("category")
             .HasMaxLength(50);
+
+        builder.Property(x => x.CreatedAt)
+            .HasColumnName("createdat")
+            .HasColumnType("timestamptz(3)")  //w timezone!
+            .IsRequired();
+
+        builder.Property(x => x.UpdatedAt)
+            .HasColumnName("updatedat")
+            .HasColumnType("timestamptz(3)")
+            .IsRequired();
 
         //x relazione User->Subscription ma senza navigation property(che è un problema xk non è loosing)!!
         builder

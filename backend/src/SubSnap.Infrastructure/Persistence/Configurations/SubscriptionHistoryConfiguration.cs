@@ -27,14 +27,17 @@ internal class SubscriptionHistoryConfiguration : IEntityTypeConfiguration<Subsc
         builder.Property(x => x.NewValue)
             .HasColumnName("newvalue");
 
-        builder.Property(x => x.CreatedAt)
-            .HasColumnName("createdat")
-            .HasColumnType("timestamptz(3)");
-
         builder.Property<Guid>("SubscriptionId")  //SHADOW KEY
-            .HasColumnName("subscriptionid");
+            .HasColumnName("subscriptionid")
+            .IsRequired(); //sempre required!!
 
         builder.HasIndex("SubscriptionId");
+
+        builder.Property(x => x.CreatedAt)
+            .HasColumnName("createdat")
+            .HasColumnType("timestamptz(3)")  //w timezone!
+            .IsRequired();
+
 
         builder
             .HasOne<Subscription>()
