@@ -17,7 +17,7 @@ public class UserMedia : AggregateRoot
     //public string FileName { get; private set; }
     //public string Url { get; private set; }
 
-    private UserMedia() { }
+    private UserMedia() { }  //x ORM
 
     public UserMedia(
         UserId userId,
@@ -32,6 +32,6 @@ public class UserMedia : AggregateRoot
         ObjectKey = objectKey;
         ContentType = contentType;
         Size = size;
-        UploatedAt = uploatedAt;
+        UploatedAt = DateTime.UtcNow;
     }
 }

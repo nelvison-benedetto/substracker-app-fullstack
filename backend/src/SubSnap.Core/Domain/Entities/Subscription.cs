@@ -12,10 +12,12 @@ public class Subscription
     public DateOnly? EndDate { get; private set; }
     public string? Category { get; private set; }
 
+    public DateTime CreatedAt { get; private set; }
+    public DateTime UpdatedAt { get; private set; }
+
     protected Subscription() { }  //constructor!!
 
     public Subscription(
-        //SubscriptionId? id,
         string name,
         decimal amount,
         string billingCycle,
@@ -30,5 +32,13 @@ public class Subscription
         StartDate = startDate;
         EndDate = endDate;
         Category = category;
+
+        CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdateLastUpdateAt()
+    {
+        UpdatedAt = DateTime.UtcNow;
     }
 }

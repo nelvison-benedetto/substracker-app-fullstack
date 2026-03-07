@@ -7,6 +7,8 @@ public class RefreshToken
     public DateTime ExpiresAt { get; private set; }
     public bool IsRevoked { get; private set; }
 
+    public DateTime CreatedAt { get; }
+
     private RefreshToken() { }  //x ORM
 
     internal RefreshToken(string token, DateTime expiresAt)
@@ -15,6 +17,8 @@ public class RefreshToken
         Token = token;
         ExpiresAt = expiresAt;
         IsRevoked = false;
+
+        CreatedAt = DateTime.UtcNow;
     }
 
     public void Revoke() => IsRevoked = true;

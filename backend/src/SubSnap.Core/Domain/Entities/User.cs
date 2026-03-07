@@ -57,8 +57,12 @@ public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'
     public void UpdateLastLogin()
     {
         LastLogin = DateTime.UtcNow;
+    }
+    public void UpdateLastUpdateAt()
+    {
         UpdatedAt = DateTime.UtcNow;
     }
+
     public void AddRefreshToken(string token, DateTime expiresAt)
     {
         _refreshTokens.Add(new RefreshToken(token, expiresAt));

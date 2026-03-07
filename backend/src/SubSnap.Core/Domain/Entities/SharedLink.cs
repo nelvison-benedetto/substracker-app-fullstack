@@ -8,15 +8,29 @@ public class SharedLink
     public string Link { get; }
     public DateTime? ExpireAt { get; }
     public int Views { get; private set; }
+
+    public DateTime CreatedAt { get; private set; }
+    public DateTime UpdatedAt { get; private set; }
+
+    public SharedLink() { }
+
     public SharedLink(
-        SharedLinkId id,
         string link,
         DateTime? expireAt,
         int views)
     {
-        Id = id;
+        Id = SharedLinkId.New();
         Link = link;
         ExpireAt = expireAt;
         Views = views;
+
+        CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
     }
+
+    public void UpdateLastUpdateAt()
+    {
+        UpdatedAt = DateTime.UtcNow;
+    }
+
 }

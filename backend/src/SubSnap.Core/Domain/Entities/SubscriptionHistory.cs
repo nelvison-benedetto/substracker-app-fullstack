@@ -1,12 +1,17 @@
-﻿namespace SubSnap.Core.Domain.Entities;
+﻿using SubSnap.Core.Domain.ValueObjects;
+
+namespace SubSnap.Core.Domain.Entities;
 
 public class SubscriptionHistory
 {
-    //non ha Id, è Value-like. vive solo dentro Subscription.
+    public SubscriptionHistoryId Id { get; private set; }
     public string Action { get; }
     public string? OldValue { get; }
     public string? NewValue { get; }
+
     public DateTime CreatedAt { get; }
+
+    protected SubscriptionHistory() { }
 
     public SubscriptionHistory(
         string action,
@@ -14,9 +19,10 @@ public class SubscriptionHistory
         string? newValue,
         DateTime createdAt)
     {
+        Id = SubscriptionHistoryId.New();
         Action = action;
         OldValue = oldValue;
         NewValue = newValue;
-        CreatedAt = createdAt;
+        CreatedAt = DateTime.UtcNow;
     }
 }
