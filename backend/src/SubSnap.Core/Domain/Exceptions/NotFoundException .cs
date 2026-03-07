@@ -1,4 +1,6 @@
-﻿namespace SubSnap.Core.Domain.Exceptions;
+﻿using SubSnap.Core.Domain.ValueObjects;
+
+namespace SubSnap.Core.Domain.Exceptions;
 
 public abstract class NotFoundException : Exception
 {
@@ -8,7 +10,7 @@ public abstract class NotFoundException : Exception
 // esempio specifico per User, see .api\middleware\exceptionhandling\ExceptionMiddlewareExtensions.cs x more info!!!
 public sealed class UserNotFoundException : NotFoundException
 {
-    public UserNotFoundException(int userId)
+    public UserNotFoundException(UserId userId)
         : base($"User with id {userId} was not found.") { }
 }
 
