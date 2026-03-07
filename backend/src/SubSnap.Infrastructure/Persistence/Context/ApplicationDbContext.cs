@@ -14,7 +14,9 @@ public class ApplicationDbContext : DbContext
     //SOLO AGGREGATE ROOTS
     public DbSet<User> Users => Set<User>();  //solo la ROOT DELL'AGGREGATE deve essere esposto al dbset. ora EF puo PUO TRACCIARE questa aggregate root. 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();  //x dire a ef di creare tab OutboxMessages
-    public DbSet<UserMedia> userMedias => Set<UserMedia>();
+    //public DbSet<UserMedia> userMedias => Set<UserMedia>();
+    public DbSet<Subscription> Subscriptions => Set<Subscription>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

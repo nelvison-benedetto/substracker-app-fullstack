@@ -13,18 +13,15 @@ public sealed class RTHandler : IRequestHandler<RTCommand, RTResult>
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasherService _passwordHasherService;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly IUnitOfWork _uow;
 
     public RTHandler(
         IUserRepository userRepository,
         IPasswordHasherService passwordHasherService,
-        IJwtTokenService jwtTokenService,
-        IUnitOfWork uow)
+        IJwtTokenService jwtTokenService)
     {
         _userRepository = userRepository;
         _passwordHasherService = passwordHasherService;
         _jwtTokenService = jwtTokenService;
-        _uow = uow;
     }
 
     public async Task<RTResult> Handle( RTCommand command, CancellationToken ct )  //chiamato 'Handle' obbligatorio x plugin MediatR

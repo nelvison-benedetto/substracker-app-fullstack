@@ -15,11 +15,10 @@ public class LogoutTokenPolicy
     public Core.Domain.Entities.RefreshToken EnsureValid(string providedToken, User user) 
     {  //uso tutto il path xk ho anche folder che si chiama RefreshToken e VS si confonde
         var token = user.FindActiveRefreshToken(
-            storedToken =>
-                _hasher.Verify(
-                    providedToken,
-                    new PasswordHash(storedToken)));
+            storedToken =>  //rappresenta il token salvato sul db, cioe RefreshToken.Token !
+                _hasher.Verify( providedToken, new PasswordHash(storedToken)));
 
         return token ?? throw new UnauthorizedAccessException();
     }
+    //lambda expression. è come dire bool Match(string storedToken){return _hasher.Verify(providedToken, new PasswordHash(storedToken));}
 }

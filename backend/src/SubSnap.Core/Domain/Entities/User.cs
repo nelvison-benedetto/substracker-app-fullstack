@@ -72,7 +72,7 @@ public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'
         //IPasswordHasherService hasher,  WRONG domain non deve conoscere servizi esterni, il domain non deve hasharare! deve solo sapere se matcha.
 
         Func<string, bool> tokenMatcher
-    )  //vero DDD (.domain non conosce infrastructure, non conosce plugin, gli arriva solo una regola(funct))!
+    )  //VERO DDD!! (.domain non conosce infrastructure, non conosce plugin, gli arriva solo una regola(funct)). è 'una funzione che riceve una string, e restituisce un bool'.
     {
         return _refreshTokens
             .FirstOrDefault(rt =>

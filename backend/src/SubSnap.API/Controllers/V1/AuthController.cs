@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SubSnap.API.Contracts.Auth.Requests;
@@ -25,6 +24,7 @@ public class AuthController : ControllerBase
     private readonly LoginOrchestrator _loginOrchestrator;
     private readonly LogoutOrchestrator _logoutOrchestrator;
     private readonly RTOrchestrator _rtOrchestrator;
+    //si aggiungono sempre manualmente
 
     public AuthController(
         IMapper mapper,

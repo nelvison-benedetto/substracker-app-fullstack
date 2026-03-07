@@ -56,9 +56,7 @@ public sealed class LogoutHandler : IRequestHandler<LogoutCommand> //x plugin Me
         var user = await _loader.Load(command.UserId, ct)
             ?? throw new UnauthorizedAccessException();
 
-        var token = _policy.EnsureValid(
-            command.RefreshToken,
-            user);
+        var token = _policy.EnsureValid( command.RefreshToken, user);
 
         user.RevokeRefreshToken(token);
         //await _uow.SaveChangesAsync(ct); lo faccio nel transactionbehavior.cs durante la risalita verso il controller
