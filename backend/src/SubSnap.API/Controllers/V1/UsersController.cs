@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SubSnap.API.Contracts.Responses;
 using SubSnap.API.Contracts.Users.Requests;
 using SubSnap.API.Contracts.Users.Responses;
+using SubSnap.Application.UseCases.Users.DeleteUser;
 using SubSnap.Application.UseCases.Users.RegisterUser;
 
 namespace SubSnap.API.Controllers.V1;
@@ -19,25 +20,27 @@ public class UsersController : ControllerBase
 
     //private readonly IMediator _mediator;
     private readonly RUOrchestrator _ruOrchestrator;
-
+    private readonly DeleteUserOrchestrator _deleteUserOrchestrator;
     public UsersController( 
         IMapper mapper, 
         IValidator<RUCommand> validator,
         //IRUHandler ruHandler
-        RUOrchestrator ruOrchestrator
+        RUOrchestrator ruOrchestrator,
+        DeleteUserOrchestrator deleteUserOrchestrator
     )
     {
         _mapper = mapper;
         _validator = validator;
         //_mediator = mediator;
         _ruOrchestrator = ruOrchestrator;
+        _deleteUserOrchestrator = deleteUserOrchestrator;
     }
 
     [HttpPost("register")]
     [ProducesResponseType(typeof(ApiResult<RegisterUserResponse>), StatusCodes.Status200OK)] //questi servono agli sviluppatori per capire / OpenAPI / Swagger x status code http x this method. SE INVECE USI IL RETURN Task<IActionResult> funziona sempre ma è meno leggibile da .net e da SwaggerApi
     [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status400BadRequest)]
     //[ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status500InternalServerError)] questo intanto è globale lo da auto via middleware
-    public async Task<ActionResult<ApiResult<RegisterUserResponse>>> RegisterUserAsync(RegisterUserRequest request, CancellationToken ct)
+    public async Task<ActionResult<ApiResult<RegisterUserResponse>>> RegisterUserAsync([FromBody] RegisterUserRequest request, CancellationToken ct)
     {
         var command = _mapper.Map<RUCommand>(request);
         //await ValidatorHelper.ValidateCommandAsync(_validator, command); E' POCO CLEAN (il controller non dovrebbe conoscere la validation) ORA INVECE USO VALIDAZIONE AUTOMATICA w
@@ -82,5 +85,15 @@ public class UsersController : ControllerBase
       -> Envelope ApiResult.Ok
       -> JSON Response
      */
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> DeleteUserAsync([FromBody] DeleteUserRequest request, CancellationToken ct)
+    {
+        var command = _mapper.Map<DeleteUserCommand>(request);
+        await _deleteUserOrchestrator.Execute(command,ct);
+        return NoContent();
+    }
+
 
 }

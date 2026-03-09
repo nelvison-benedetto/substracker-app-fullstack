@@ -85,6 +85,12 @@ public class UserRepository : IUserRepository
         return Task.CompletedTask;
     }
 
+    public Task DeleteAsync(User user, CancellationToken ct)
+    {
+        _context.Users.Remove(user);
+        return Task.CompletedTask;
+    }
+
     //---AGGREGATES---
 
     //old approach

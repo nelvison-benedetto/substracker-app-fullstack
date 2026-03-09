@@ -12,4 +12,6 @@ public interface IUserRepository
     //COMMANDS
     Task AddAsync(User user, CancellationToken ct);
 
+    Task DeleteAsync(User user, CancellationToken ct);
+
 }

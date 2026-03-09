@@ -3,6 +3,7 @@ using SubSnap.API.Contracts.Auth.Requests;
 using SubSnap.API.Contracts.Users.Requests;
 using SubSnap.Application.UseCases.Auth.Login;
 using SubSnap.Application.UseCases.Auth.RefreshToken;
+using SubSnap.Application.UseCases.Users.DeleteUser;
 using SubSnap.Application.UseCases.Users.RegisterUser;
 namespace SubSnap.API.Mapping;
 
@@ -25,6 +26,8 @@ public sealed class RequestToCommandProfile : Profile  //Profile è classe di Au
         CreateMap<RegisterUserRequest, RUCommand>();
         //non necessario fare .ConstructUsing() xk properties matchano stesso nome & no value objects (e.g.no Email Email)
 
+        CreateMap<DeleteUserRequest, DeleteUserCommand>()
+            .ConstructUsing(src => new DeleteUserCommand( new Core.Domain.ValueObjects.UserId(src.UserId) ));
 
     }
     //CreateMap<RegisterUserRequest, RUCommand>();

@@ -82,7 +82,7 @@ public sealed class LoginHandler : IRequestHandler<LoginCommand, LoginResult> //
     private readonly IJwtTokenService _jwt;
     private readonly IPasswordHasherService _hasher;
     private readonly IUnitOfWork _uow;
-
+    
     public LoginHandler(
         UserByEmailLoader loader,
         PasswordPolicy passwordPolicy,

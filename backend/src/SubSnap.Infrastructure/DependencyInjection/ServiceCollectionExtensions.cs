@@ -28,7 +28,9 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<ApplicationDbContext>( options => options.UseNpgsql( configuration.GetConnectionString("sqlConnection") )
         );  //postgreSQL x EF core. SOLO WRITE(sempre usando UnitOfWork)
 
-        services.AddDbContextFactory<ApplicationDbContext>(options =>  options.UseNpgsql(configuration.GetConnectionString("sqlConnection")));  //SOLO READ(cosi puoi fare QUERY PARALLELE!!)
+        services.AddDbContextFactory<ApplicationDbContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("sqlConnection")),
+            ServiceLifetime.Scoped);   //SOLO READ(cosi puoi fare QUERY PARALLELE!!)
 
         services.AddHostedService<OutboxProcessor>(); //va bene dovunque here nella chain, viene avviato auto quando l'host .net parte.
         services.AddHttpContextAccessor();  //cosi subscriptionbatchloader.cs ha accesso al correlationid x logging(mex di debug)
