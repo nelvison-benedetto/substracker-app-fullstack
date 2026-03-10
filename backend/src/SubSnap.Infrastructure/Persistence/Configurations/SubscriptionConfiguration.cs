@@ -73,7 +73,7 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
 
         //x relazione User->Subscription ma senza navigation property(che è un problema xk non è loosing)!!
         builder
-            .HasOne<User>()
+            .HasOne<User>()  //NON nav prop diretta, solo FK shadow
             .WithMany()
             .HasForeignKey("UserId")
             .OnDelete(DeleteBehavior.Cascade);

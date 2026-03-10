@@ -8,8 +8,8 @@ using SubSnap.Infrastructure.Persistence.Context;
 namespace SubSnap.Infrastructure.DataLoaders.Aggregates;
 
 /*
- * PROIEZIONE RUNTIME. user + subscriptions , TODO anche + sharedlinks ect.
- * assolutamente NON USA .Include() (mega-join mostruosa)!!
+ * PROIEZIONE RUNTIME, load user+TUTTI I SUOI FIGLI(quindi no altri aggregates roots!e.g.subscriptions) ...
+ * assolutamente NON USARE .Include() (mega-join mostruosa)!!
  * 
  * xxxAggregateLoader NON conosce i BATCHLOADERS!! è solo un builder.
  * viene chiamato dall' handler.
