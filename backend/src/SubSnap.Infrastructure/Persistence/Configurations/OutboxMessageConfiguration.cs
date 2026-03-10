@@ -32,12 +32,12 @@ public sealed class OutboxMessageConfiguration
 
         builder.Property(x => x.OccurredOnUtc)
             .HasColumnName("occurredonutc")
-            .HasColumnType("timestamptz")  //non è (3), magari da cambiare sul db.
+            .HasColumnType("timestamptz(3)")  
             .IsRequired();
 
         builder.Property(x => x.ProcessedOnUtc)
             .HasColumnName("processedonutc")
-            .HasColumnType("timestamptz");  //non è (3), magari da cambiare sul db.
+            .HasColumnType("timestamptz(3)");  
 
     }
 }

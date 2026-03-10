@@ -42,7 +42,7 @@ public sealed class UserMediaConfiguration
 
         builder.Property(x => x.UploatedAt)
             .HasColumnName("uploadedat")
-            .HasColumnType("timestamptz")  //non è (3), magari da cambiare sul db.
+            .HasColumnType("timestamptz(3)")
             .IsRequired();
 
 
