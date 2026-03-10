@@ -30,7 +30,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
     {
         // context #1 → user
         await using var userContext =
-            await _factory.CreateDbContextAsync(ct); //x nuovo db context isolato
+            await _factory.CreateDbContextAsync(ct); //x nuovo db context isolato!!!
 
         var user = await userContext.Users
             .AsNoTracking()
@@ -40,9 +40,8 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
             return null;
 
         // PARALLEL CONTEXTS
-        var subscriptionsTask = LoadSubscriptions(userId, ct); //ritorna la lista di Subscription
-
-        await Task.WhenAll(subscriptionsTask);  //run queries in parallelo!!
+        var subscriptionsTask = LoadSubscriptions(userId, ct); //return la lista di Subscription!
+        await Task.WhenAll( subscriptionsTask);  //run queries in parallelo!!
             //Thread A → context #1 → SELECT users ...
             //Thread B → context #2 → SELECT subscriptions...
             //db lavora meglio perche ha query piccole su threads diversi(in questo caso il db riceve 2 threads e li runna CONTEMPORANEAMENTE (PARALLELISMO)), non 1 mega join!!

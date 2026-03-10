@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.Persistence;
-using SubSnap.Core.Domain.Aggregates;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.ValueObjects;
 //using SubSnap.Infrastructure.Mapping;
@@ -23,7 +22,7 @@ public class UserRepository : IUserRepository
         _context = context;
         _passwordHasherService = passwordHasherService;
     }
-    
+
     public async Task<Core.Domain.Entities.User?> FindByIdAsync(UserId id, CancellationToken ct)  //Task<User?> because it can return null, return type is domain User
     {
         return await _context.Users
@@ -60,7 +59,7 @@ public class UserRepository : IUserRepository
         return await _context.Users
             .FirstOrDefaultAsync(
                 u => u.Id == EF.Property<UserId>(token, "UserId"),  //legge la SHADOW KEY(la trovi nei xxxconfiguration e serve a legare le entitites e.g. subscriptions->user)!
-                  //significa User.Id == RefreshToken.UserId solo che RefreshToken.UserId è la shadowkey
+                                                                    //significa User.Id == RefreshToken.UserId solo che RefreshToken.UserId è la shadowkey
                 ct);
     }
 
@@ -91,6 +90,11 @@ public class UserRepository : IUserRepository
         return Task.CompletedTask;
     }
 
+    //repository CLEAN, no aggregates & loaders (quelli sono i folders dedicati).
+}
+
+
+
     //---AGGREGATES---
 
     //old approach
@@ -105,51 +109,63 @@ public class UserRepository : IUserRepository
     //    return entity is null ? null : UserAggregateMapper.ToDomain(entity);
     //}
 
-    public async Task<UserAggregate?> LoadUserAggregateAsync(UserId userId, CancellationToken ct)
-    {
-        // no navigation properties fra aggregates quindi NO .Include()!!, usa invece query separate. style usato anche da Uber & Stripe
+//    public async Task<UserAggregate?> LoadUserAggregateAsync(UserId userId, CancellationToken ct)
+//    {
+//        // no navigation properties fra aggregates quindi NO .Include()!!,
+//        // usa invece query separate, style usato anche da Uber & Stripe
 
-        var user = await _context.Users
-            .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == userId, ct);  //add ct cosi da propagarlo fino al db driver.
+//        var user = await _context.Users
+//            .AsNoTracking()
+//            .FirstOrDefaultAsync(u => u.Id == userId, ct);  //add ct cosi da propagarlo fino al db driver.
 
-        if (user is null)
-            return null;
+//        if (user is null)
+//            return null;
 
-        var subscriptionsTask =  _context.Set<Subscription>()  //here non usare 'await'
-            .AsNoTracking()
-            .Where(s => EF.Property<Guid>(s, "UserId") == userId.Value)
-            .ToListAsync(ct); //add ct cosi da propagarlo fino al db driver.
+//        var subscriptionsTask =  _context.Set<Subscription>()  //here non usare 'await'
+//            .AsNoTracking()
+//            .Where(s => EF.Property<Guid>(s, "UserId") == userId.Value)
+//            .ToListAsync(ct); //add ct cosi da propagarlo fino al db driver.
 
-        var sharedLinksTask =  _context.Set<SharedLink>()  //here non usare 'await'
-            .AsNoTracking()
-            .Where(sl => EF.Property<Guid>(sl, "UserId") == userId.Value)
-            .ToListAsync(ct);
+//        var sharedLinksTask =  _context.Set<SharedLink>()  //here non usare 'await'
+//            .AsNoTracking()
+//            .Where(sl => EF.Property<Guid>(sl, "UserId") == userId.Value)
+//            .ToListAsync(ct);
 
-        await Task.WhenAll(subscriptionsTask, sharedLinksTask);  
-        //pero EF di default non puo fare PARALLEL QUERIES, quindi devi settare IDbContextFactory<ApplicationDbContext>...INFO
+//        await Task.WhenAll( subscriptionsTask, sharedLinksTask);
 
-        return new UserAggregate(
-            user,
-            subscriptionsTask.Result,
-            sharedLinksTask.Result);
-    }
-    
-    public async Task<UserSubscriptionsAggregate?> LoadUserWithSubscriptionsAsync(UserId userId, CancellationToken ct)
-    {
-        var user = await _context.Users
-            .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == userId, ct);
+//        return new UserAggregate(
+//            user,
+//            subscriptionsTask.Result,
+//            sharedLinksTask.Result);
+//    }
 
-        if (user is null)
-            return null;
+//    public async Task<Dictionary<Guid, List<Subscription>>> LoadSubscriptionsBatchAsync(IEnumerable<Guid> userIds)
+//    {
+//        await using var context = await _factory.CreateDbContextAsync();
 
-        var subscriptions = await _context.Set<Subscription>()
-            .AsNoTracking()
-            .Where(s => EF.Property<Guid>(s, "UserId") == userId.Value)  //usi la shadow property
-            .ToListAsync(ct);
+//        var subs = await context.Set<Subscription>()
+//            .Where(s => userIds.Contains(EF.Property<Guid>(s, "UserId")))
+//            .ToListAsync();
 
-        return new UserSubscriptionsAggregate(user, subscriptions);
-    }
+//        return subs.GroupBy(s => EF.Property<Guid>(s, "UserId"))
+//                   .ToDictionary(g => g.Key, g => g.ToList());
+//    }
 
-}
+//    public async Task<UserSubscriptionsAggregate?> LoadUserWithSubscriptionsAsync(UserId userId, CancellationToken ct)
+//    {
+//        var user = await _context.Users
+//            .AsNoTracking()
+//            .FirstOrDefaultAsync(u => u.Id == userId, ct);
+
+//        if (user is null)
+//            return null;
+
+//        var subscriptions = await _context.Set<Subscription>()
+//            .AsNoTracking()
+//            .Where(s => EF.Property<Guid>(s, "UserId") == userId.Value)  //usi la shadow property
+//            .ToListAsync(ct);
+
+//        return new UserSubscriptionsAggregate(user, subscriptions);
+//    }
+
+//}
