@@ -15,7 +15,7 @@ namespace SubSnap.API.Controllers.V1;
 public class UsersController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly IValidator<RUCommand> _validator;
+    //private readonly IValidator<RUCommand> _validator; non serve, intanto il flow della pipeline passa sempre anche da validationbehavior.cs
     //private readonly IRUHandler _ruHandler;
 
     //private readonly IMediator _mediator;
@@ -23,14 +23,13 @@ public class UsersController : ControllerBase
     private readonly DeleteUserOrchestrator _deleteUserOrchestrator;
     public UsersController( 
         IMapper mapper, 
-        IValidator<RUCommand> validator,
+        //IValidator<RUCommand> validator,
         //IRUHandler ruHandler
         RUOrchestrator ruOrchestrator,
         DeleteUserOrchestrator deleteUserOrchestrator
     )
     {
         _mapper = mapper;
-        _validator = validator;
         //_mediator = mediator;
         _ruOrchestrator = ruOrchestrator;
         _deleteUserOrchestrator = deleteUserOrchestrator;

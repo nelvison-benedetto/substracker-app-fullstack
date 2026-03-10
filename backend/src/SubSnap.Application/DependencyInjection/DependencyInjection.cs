@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SubSnap.Application.Common.Behaviors;
 using SubSnap.Application.UseCases.Auth.Login;
 using SubSnap.Application.UseCases.Auth.Login.Loaders;
+using SubSnap.Application.UseCases.Users.RegisterUser;
 using System.Reflection;
 
 namespace SubSnap.Application.DependencyInjection;
@@ -31,14 +32,19 @@ public static class DependencyInjection
         //FluentValidation
         services.AddValidatorsFromAssembly(assembly);
 
-        //LOADERS(only .Application layer)
+        
+        //.Application layer, carichi(registri) tutti i file che finiscono con '..Loader','..Policy','..Orchestrator', xk altrimenti DI non li conosce. 
         services.Scan(scan =>
             scan.FromAssemblyOf<LoginCommand>()
                 .AddClasses(classes => classes.Where(t =>
                     t.Name.EndsWith("Policy") ||
-                    t.Name.EndsWith("Loader")))
+                    t.Name.EndsWith("Loader") ||
+                    t.Name.EndsWith("Orchestrator")
+                    ))
                 .AsSelf()
                 .WithScopedLifetime());
+        
+
         //mediatr conosce solo automaticamenete i suoi hanldlers e le sue validazioni, ma se nell'handler metti delle dipendenze esterne (e.g.UserByEmailLoader) allora le devi dichiarare!
         //pero io ho multipli 'UserByEmailLoader' in diversi slices,e se li aggiungo tutti a questo file, c'è confusione con i nomi visto che sono identici! quindi ok here il mio code Scan(...)
         //!cmnq meglio NON usare plugin esterno Scrutor (anche difficile poi risalire i bugs), ma e.g. chiamali 'Login_UserByEmailLoader'  'Logout_UserByEmailLoader' e aggiungili manualmente services.AddScoped<Login_UserByEmailLoader>(); ...(tutti!!)
