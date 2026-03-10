@@ -25,11 +25,25 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services, IConfiguration configuration)
     {
         //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer( configuration.GetConnectionString("sqlConnection")));
-        services.AddDbContext<ApplicationDbContext>( options => options.UseNpgsql( configuration.GetConnectionString("sqlConnection") )
+        services.AddDbContext<ApplicationDbContext>( options => options.UseNpgsql( configuration.GetConnectionString("sqlConnection"),
+            npgsqlOptions =>
+            {
+                npgsqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,                   // numero massimo di tentativi
+                    maxRetryDelay: TimeSpan.FromSeconds(2), // ritardo massimo tra retry
+                    errorCodesToAdd: null                // puoi aggiungere codici specifici se vuoi
+                );
+            }  //questi aiutano in production, se una query fallisce temporaneamente (e.g.per il db non è ancora pronto dopo il deploy) allora ritenta X volte, senza crashare al 1° tentativo.
+            )
         );  //postgreSQL x EF core. SOLO WRITE(sempre usando UnitOfWork)
 
         services.AddDbContextFactory<ApplicationDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("sqlConnection")),
+            options.UseNpgsql(configuration.GetConnectionString("sqlConnection"),
+            npgsqlOptions =>
+            {
+                npgsqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(2), null);
+            }
+            ),
             ServiceLifetime.Scoped);   //SOLO READ(cosi puoi fare QUERY PARALLELE!!)
 
         services.AddHostedService<OutboxProcessor>(); //va bene dovunque here nella chain, viene avviato auto quando l'host .net parte.

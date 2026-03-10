@@ -53,6 +53,6 @@ app.MapGet("/health/db", async (ApplicationDbContext db) =>
 {
     await db.Database.CanConnectAsync();
     return Results.Ok("DB OK");
-});
+});  //non è CleanArchitecture, ma ok mi serve solo x check connessione su server backend<-->db
 
 app.Run();
