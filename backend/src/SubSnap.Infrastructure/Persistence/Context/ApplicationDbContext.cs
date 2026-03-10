@@ -5,6 +5,17 @@ using SubSnap.Infrastructure.Persistence.Outbox;
 namespace SubSnap.Infrastructure.Persistence.Context;
 
 //see applicationdbcontext.cs  servicecollectionextensions.cs  dependencyinjection.cs
+/*
+User (Aggregate Root)
+ └── RefreshToken (child entity)
+
+Subscription (Aggregate Root)
+ └── SubscriptionHistory (child entity)
+
+//un AGGREGATEROOT lo è SE puo essere modificato SENZA toccare il father (e.g.posso cancellare subscription senza toccare l'user!).
+!il domain subscription NON deve conoscere domain User (NO uso di navigation properties!!)(vero DDD),
+gli aggregate roots li linki nelle PK/FKshadow nelle loro xxxconfiguration.cs !
+ */
 
 public class ApplicationDbContext : DbContext
 {

@@ -25,9 +25,15 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
             .HasColumnType("uuid")
             .ValueGeneratedNever(); //!!, dice a EF di non aspettarsi che il db generei l'id(xk lo genero io nel Domain)
 
-        builder.Property<Guid>("UserId")  //SHADOW FK (domain non la conosce), esiste solo dentro EF non dentro le classi c#!! fk verso User. la puoi usare nelle quesri w e.g. EF.Property<Guid>(s, "UserId")
+        //builder.Property<Guid>("UserId")  //SHADOW FK (domain non la conosce), esiste solo dentro EF non dentro le classi c#!! fk verso User. la puoi usare nelle quesri w e.g. EF.Property<Guid>(s, "UserId")
+        //    .HasColumnName("userid")
+        //    .IsRequired();  //sempre required!!
+        builder.Property<UserId>("UserId")  //SHADOW FK (Value Object)
+            .HasConversion(
+                id => id.Value,
+                value => new UserId(value))
             .HasColumnName("userid")
-            .IsRequired();  //sempre required!!
+            .IsRequired();
 
         builder.Property(x => x.Name)
             .HasColumnName("name")

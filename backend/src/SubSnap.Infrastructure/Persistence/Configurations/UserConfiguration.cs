@@ -72,6 +72,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Ignore(x => x.RefreshTokens);  //ignora xk EF altrimenti si confoderebbe tra RefreshTokens(property) e _refreshTokens(field str). intanto glielo dici here qua sotto cosa fare.
 
+
         builder
             .HasMany<RefreshToken>("_refreshTokens")  //lo trovi in User.cs, (stai passando una str non una property!, queindi ef fa 'ok, cerco un FIELD privato chiamato _refreshTokens' e lo usa direttamente)
             .WithOne()  //ogni refresh token ha un solo user

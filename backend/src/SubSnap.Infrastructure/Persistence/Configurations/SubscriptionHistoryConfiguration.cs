@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SubSnap.Core.Domain.Entities;
+using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Infrastructure.Persistence.Configurations;
 
@@ -32,9 +33,15 @@ internal class SubscriptionHistoryConfiguration : IEntityTypeConfiguration<Subsc
         builder.Property(x => x.NewValue)
             .HasColumnName("newvalue");
 
-        builder.Property<Guid>("SubscriptionId")  //SHADOW KEY
+        //builder.Property<Guid>("SubscriptionId")  //SHADOW KEY
+        //    .HasColumnName("subscriptionid")
+        //    .IsRequired(); //sempre required!!
+        builder.Property<SubscriptionId>("SubscriptionId")  //SHADOW FK (Value Object)
+            .HasConversion(
+                id => id.Value,
+                value => new SubscriptionId(value))
             .HasColumnName("subscriptionid")
-            .IsRequired(); //sempre required!!
+            .IsRequired();
 
         builder.HasIndex("SubscriptionId");
 

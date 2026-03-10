@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SubSnap.Core.Domain.Entities;
+using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Infrastructure.Persistence.Configurations;
 
@@ -39,10 +40,18 @@ public class RefreshTokenConfiguration
             .IsRequired();
 
 
-        builder.Property<Guid>("UserId")
-            .HasColumnName("userid"); //SHADOW FK (domain non la conosce), esiste solo dentro EF non dentro le classi c#!! FK verso User. la puoi usare nelle queeri w e.g. EF.Property<Guid>(s, "UserId")
+        //builder.Property<Guid>("UserId")
+        //    .HasColumnName("userid"); //SHADOW FK (domain non la conosce), esiste solo dentro EF non dentro le classi c#!! FK verso User. la puoi usare nelle query w e.g. EF.Property<Guid>(s, "UserId")
+        builder.Property<UserId>("UserId")  //SHADOW FK (Value Object)
+            .HasConversion(
+                id => id.Value,
+                value => new UserId(value))
+            .HasColumnName("userid")
+            .IsRequired();
+
         builder.HasIndex("UserId");
         builder.HasIndex(x => x.Token)
             .IsUnique();  //ogni refresh token deve essere univoco nel DB
+
     }
 }
