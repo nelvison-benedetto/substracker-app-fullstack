@@ -85,81 +85,94 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
         }
         //garantisce solo 1 batch running attivo!!
 
-        _ = Task.Run(ExecuteBatch(ct));  //parte in background
+        _ = Task.Run(() => ExecuteBatch(ct), ct);  //parte in background
     }
     
     private async Task ExecuteBatch(CancellationToken ct = default)
     {
-        await Task.Delay(5, ct); //aspetti 5ms, perche serve un po di tempo x raccogliere le req simultanee. e.g. t=0ms user1 t=1ms user2 t=3ms user3...
-
-        var snapshot = _pending.ToArray(); //congeli le req attuali
-        var ids = snapshot.Select(x => x.Key).ToList();  //ora hai e.g. [user1, user2, user3]
-
-        await using var db =
-            await _factory.CreateDbContextAsync(ct);
-
-        //OLD before logging x batch loader
-        //var subs = await db.Set<Subscription>()
-        //    .Where(s => ids.Contains(
-        //        EF.Property<Guid>(s, "UserId")))
-        //    .ToListAsync();
-        //var grouped = subs
-        //    .GroupBy(s =>
-        //        EF.Property<Guid>(s, "UserId"))
-        //    .ToDictionary(g => g.Key, g =>
-        //        (IReadOnlyList<Subscription>)g.ToList());
-        //foreach (var (id, tcs) in snapshot)
-        //{
-        //    grouped.TryGetValue(id, out var result);
-        //    tcs.TrySetResult(result ?? new List<Subscription>());
-        //    _pending.TryRemove(id, out _);
-        //}
-        //lock (_lock)
-        //    _scheduled = false;
-
-        //LOGGING SPECIFICO anche X BATCH LOADERS
-        // Recupero CorrelationId dal contesto HTTP
-        var correlationId = _httpContextAccessor.HttpContext?.Items["CorrelationId"]
-            ?? _httpContextAccessor.HttpContext?.Request.Headers["X-Correlation-Id"].FirstOrDefault()
-            ?? Guid.NewGuid().ToString();
-
-        using (_logger.BeginScope( new Dictionary<string, object>
+        try
         {
-            ["CorrelationId"] = correlationId,
-            ["Batch"] = "SubscriptionLoader"
-        })) //aggiunge auto CorrelationId Batch=SubscriptionLoader a tutti i logs all'interno
-        {
-            _logger.LogInformation(
-                "Executing subscription batch query for {Count} users",
-                ids.Count);
+            await Task.Delay(5, ct); //aspetti 5ms, perche serve un po di tempo x raccogliere le req simultanee. e.g. t=0ms user1 t=1ms user2 t=3ms user3...
 
-            var sw = Stopwatch.StartNew();  //x performace monitoring in tempo reale. see performancebehvior.cs
+            var snapshot = _pending.ToArray(); //congeli le req attuali
+            var ids = snapshot.Select(x => x.Key).ToList();  //ora hai e.g. [user1, user2, user3]
 
-            var subs = await db.Set<Subscription>()
-                .Where(s => ids.Contains(EF.Property<Guid>(s, "UserId")))
-                .ToListAsync();
+            await using var db =
+                await _factory.CreateDbContextAsync(ct);
 
-            sw.Stop();
+            //OLD before logging x batch loader
+            //var subs = await db.Set<Subscription>()
+            //    .Where(s => ids.Contains(
+            //        EF.Property<Guid>(s, "UserId")))
+            //    .ToListAsync();
+            //var grouped = subs
+            //    .GroupBy(s =>
+            //        EF.Property<Guid>(s, "UserId"))
+            //    .ToDictionary(g => g.Key, g =>
+            //        (IReadOnlyList<Subscription>)g.ToList());
+            //foreach (var (id, tcs) in snapshot)
+            //{
+            //    grouped.TryGetValue(id, out var result);
+            //    tcs.TrySetResult(result ?? new List<Subscription>());
+            //    _pending.TryRemove(id, out _);
+            //}
+            //lock (_lock)
+            //    _scheduled = false;
 
-            _logger.LogInformation(
-                "Batch query completed in {ElapsedMs}ms returning {Rows} rows",
-                sw.ElapsedMilliseconds,
-                subs.Count);
+            //LOGGING SPECIFICO anche X BATCH LOADERS
+            // Recupero CorrelationId dal contesto HTTP
+            var correlationId = _httpContextAccessor.HttpContext?.Items["CorrelationId"]
+                ?? _httpContextAccessor.HttpContext?.Request.Headers["X-Correlation-Id"].FirstOrDefault()
+                ?? Guid.NewGuid().ToString();
 
-            var grouped = subs
-                .GroupBy(s => EF.Property<Guid>(s, "UserId"))
-                .ToDictionary(g => g.Key, g => (IReadOnlyList<Subscription>)g.ToList());
-
-            foreach (var (id, tcs) in snapshot)
+            using (_logger.BeginScope(new Dictionary<string, object>
             {
-                grouped.TryGetValue(id, out var result);
-                tcs.TrySetResult(result ?? new List<Subscription>());
-                _pending.TryRemove(id, out _);
+                ["CorrelationId"] = correlationId,
+                ["Batch"] = "SubscriptionLoader"
+            })) //aggiunge auto CorrelationId Batch=SubscriptionLoader a tutti i logs all'interno
+            {
+                _logger.LogInformation(
+                    "Executing subscription batch query for {Count} users",
+                    ids.Count);
+
+                var sw = Stopwatch.StartNew();  //x performace monitoring in tempo reale. see performancebehvior.cs
+
+                var subs = await db.Set<Subscription>()
+                    .Where(s => ids.Contains(EF.Property<Guid>(s, "UserId")))
+                    .ToListAsync();
+
+                sw.Stop();
+
+                _logger.LogInformation(
+                    "Batch query completed in {ElapsedMs}ms returning {Rows} rows",
+                    sw.ElapsedMilliseconds,
+                    subs.Count);
+
+                var grouped = subs
+                    .GroupBy(s => EF.Property<Guid>(s, "UserId"))
+                    .ToDictionary(g => g.Key, g => (IReadOnlyList<Subscription>)g.ToList());
+
+                foreach (var (id, tcs) in snapshot)
+                {
+                    grouped.TryGetValue(id, out var result);
+                    tcs.TrySetResult(result ?? new List<Subscription>());
+                    _pending.TryRemove(id, out _);
+                }
             }
         }
-
-        lock (_lock)
-            _scheduled = false; //reset, cosi permette prossimo batch
+        catch (Exception ex)
+        {
+            foreach (var (_, tcs) in _pending)
+            {
+                tcs.TrySetException(ex);
+            }
+            _pending.Clear();
+            _logger.LogError(ex, "Subscription batch loader failed");
+        }
+        finally { 
+            lock (_lock)
+                _scheduled = false; //reset, cosi permette prossimo batch
+        }
 
     }
 }
