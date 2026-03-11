@@ -94,7 +94,7 @@ public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'
     //x editare children SharedLink di questo user. visto che per modificare i childrens devi obbligatoriamente passare dall'aggregate root!
     public SharedLink CreateSharedLink(string link, DateTime? expireAt)
     {
-        var sharedLink = new SharedLink(link, expireAt, 0);
+        var sharedLink = new SharedLink(link, expireAt);
         _sharedLinks.Add(sharedLink);
         return sharedLink;
     }
