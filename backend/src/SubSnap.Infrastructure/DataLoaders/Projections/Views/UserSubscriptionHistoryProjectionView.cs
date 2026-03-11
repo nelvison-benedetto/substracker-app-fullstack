@@ -3,7 +3,7 @@
 namespace SubSnap.Infrastructure.DataLoaders.Projections.Views;
 
 /*
-non va nel Domain, xk è un read models delle query!! non è un business aggregate!
+non va nel Domain, xk è un read models delle query!! non è un business aggregate! non rappresenta uno STATO reale di dominio!!
  */
 public sealed class UserSubscriptionHistoryProjectionView
 {
