@@ -3,7 +3,8 @@ using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Infrastructure.DataLoaders.Projections;
 
-//combinazione 2 Aggregate Roots!!
+//ogni xxxProjection.cs solitamente è solo x 1 solo caso d'uso. e.g.LoadDashboard() / LoadStats() / ect..
+//here combinazione 2 Aggregate Roots!!
 public class UserSubscriptionsProjectionLoader
 {
     private readonly IUserAggregateLoader _userLoader;
@@ -17,7 +18,7 @@ public class UserSubscriptionsProjectionLoader
         _subscriptionLoader = subscriptionLoader;
     }
 
-    public async Task<UserSubscriptionsProjection?> Load(
+    public async Task<UserSubscriptionsProjectionView?> LoadAsync(
         UserId userId,
         CancellationToken ct = default)
     {
@@ -29,7 +30,7 @@ public class UserSubscriptionsProjectionLoader
         if (userTask.Result == null)
             return null;
 
-        return new UserSubscriptionsProjection(
+        return new UserSubscriptionsProjectionView(
             userTask.Result,
             subsTask.Result);
     }

@@ -76,7 +76,7 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
         return tcs.Task;
     }
 
-    private void ScheduleExecution(CancellationToken ct)
+    private void ScheduleExecution(CancellationToken ct = default)
     {
         lock (_lock)
         {
@@ -88,9 +88,9 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
         _ = Task.Run(ExecuteBatch(ct));  //parte in background
     }
     
-    private async Task ExecuteBatch(CancellationToken ct)
+    private async Task ExecuteBatch(CancellationToken ct = default)
     {
-        await Task.Delay(5); //aspetti 5ms, perche serve un po di tempo x raccogliere le req simultanee. e.g. t=0ms user1 t=1ms user2 t=3ms user3...
+        await Task.Delay(5, ct); //aspetti 5ms, perche serve un po di tempo x raccogliere le req simultanee. e.g. t=0ms user1 t=1ms user2 t=3ms user3...
 
         var snapshot = _pending.ToArray(); //congeli le req attuali
         var ids = snapshot.Select(x => x.Key).ToList();  //ora hai e.g. [user1, user2, user3]

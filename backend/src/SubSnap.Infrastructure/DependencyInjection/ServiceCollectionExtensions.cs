@@ -71,8 +71,12 @@ public static class ServiceCollectionExtensions
 
         //services.AddScoped<IEventDispatcher, MediatREventDispatcher>(); //ora uso outboxprocessor x dispatcher outbox pattern.
 
+        //x Loaders & Bathchers, x Projections non necessario xk è interno.
         services.AddScoped<IUserAggregateLoader, UserAggregateLoader>();
-        services.AddScoped<ISubscriptionBatchLoader, SubscriptionBatchLoader>(); //addscoped bc 1 http req = 1 batch window
+        services.AddScoped<ISubscriptionAggregateLoader, SubscriptionAggregateLoader>();
+            //addscoped bc 1 http req = 1 batch window
+        services.AddScoped<ISubscriptionBatchLoader, SubscriptionBatchLoader>();
+        services.AddScoped<ISharedLinkBatchLoader, SharedLinkBatchLoader>();
 
 
         services.AddSingleton<IAmazonS3>(sp =>
