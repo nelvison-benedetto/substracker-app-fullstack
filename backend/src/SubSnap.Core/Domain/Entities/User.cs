@@ -9,7 +9,8 @@ namespace SubSnap.Core.Domain.Entities;
 public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'aggregate root) puo emettere domain events (e.g. UserRegisteredEvent) che poi saranno raccolti e pubblicati da MediatR dopo che la transazione è stata completata con successo.
 {
     private readonly List<RefreshToken> _refreshTokens = new();  //private xk SOLO user puo modificarli, quindi i refreshtokens fanno parte dell'aggregate user!!(non hanno un lifecycle indipendente, non hanno un Repository proprio, non possono vivere senza user!!)
-    
+    private readonly List<SharedLink> _sharedLinks = new();
+
     public UserId Id { get; private set; }  //type other obj (readonly struct)(./ValueObjects/), COSI FAI LA VALIDAZIONE
         //nullable. verrà creato da DB. nessuns 'private setter' sull'id, domain puro
     public Email Email { get; private set; }   //type other obj  (readonly struct)(./ValueObjects/)
@@ -21,7 +22,7 @@ public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'
     public DateTime? LastLogin { get; private set; }  //private set; xk editabile solo here da method UpdateLastLogin()
     public bool IsActive { get; private set; }
     public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens;
-    
+    public IReadOnlyCollection<SharedLink> SharedLinks => _sharedLinks;  
 
     protected User() { }  //constructor!! x ORM only
 
@@ -63,6 +64,7 @@ public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'
         UpdatedAt = DateTime.UtcNow;
     }
 
+
     public void AddRefreshToken(string token, DateTime expiresAt)
     {
         _refreshTokens.Add(new RefreshToken(token, expiresAt));
@@ -88,5 +90,23 @@ public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'
             throw new InvalidOperationException("Invalid refresh token");
         token.Revoke();
     }
+
+    //x editare children SharedLink di questo user. visto che per modificare i childrens devi obbligatoriamente passare dall'aggregate root!
+    public SharedLink CreateSharedLink(string link, DateTime? expireAt)
+    {
+        var sharedLink = new SharedLink(link, expireAt, 0);
+        _sharedLinks.Add(sharedLink);
+        return sharedLink;
+    }
+    public void RemoveSharedLink(SharedLinkId id)
+    {
+        var link = _sharedLinks.FirstOrDefault(l => l.Id == id);
+
+        if (link == null)
+            throw new InvalidOperationException("SharedLink not found");
+
+        _sharedLinks.Remove(link);
+    }
+
 
 }

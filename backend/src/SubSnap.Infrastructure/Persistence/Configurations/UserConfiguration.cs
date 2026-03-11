@@ -70,15 +70,22 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("lastlogin")
             .HasColumnType("timestamptz(3)");
 
+        //X CHILDRENS DI QUESTO AGGREGATE ROOT. poi Create/Delete/ect methods sono in User.cs
         builder.Ignore(x => x.RefreshTokens);  //ignora xk EF altrimenti si confoderebbe tra RefreshTokens(property) e _refreshTokens(field str). intanto glielo dici here qua sotto cosa fare.
-
-
         builder
             .HasMany<RefreshToken>("_refreshTokens")  //lo trovi in User.cs, (stai passando una str non una property!, queindi ef fa 'ok, cerco un FIELD privato chiamato _refreshTokens' e lo usa direttamente)
             .WithOne()  //ogni refresh token ha un solo user
             .HasForeignKey("UserId")  //la FK è la SHADOW KEY!!
             .IsRequired()  //un token non può esistere senza user
             .OnDelete(DeleteBehavior.Cascade);  //se elimini user, cancelli tutti i suoi refresh token
+
+        builder.Ignore(x => x.SharedLinks);
+        builder
+            .HasMany<SharedLink>("_sharedLinks")
+            .WithOne()
+            .HasForeignKey("UserId")
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
     }
 }

@@ -16,13 +16,13 @@ public class SharedLink
 
     public SharedLink(
         string link,
-        DateTime? expireAt,
-        int views)
+        DateTime? expireAt
+    )
     {
         Id = SharedLinkId.New();
         Link = link;
         ExpireAt = expireAt;
-        Views = views;
+        Views = 0;
 
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
