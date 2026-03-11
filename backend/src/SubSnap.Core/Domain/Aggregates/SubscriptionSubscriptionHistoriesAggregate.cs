@@ -2,12 +2,12 @@
 
 namespace SubSnap.Core.Domain.Aggregates;
 
-public class SubscriptionSubscriptionHistories
+public class SubscriptionSubscriptionHistoriesAggregate
 {
     public Subscription Subscription { get; }
     public IReadOnlyCollection<SubscriptionHistory> SubscriptionHistories { get; }
 
-    public SubscriptionSubscriptionHistories(
+    public SubscriptionSubscriptionHistoriesAggregate(
         Subscription subscription,
         IReadOnlyCollection<SubscriptionHistory> subscriptionHistories
     )
@@ -16,4 +16,5 @@ public class SubscriptionSubscriptionHistories
         SubscriptionHistories = subscriptionHistories?.ToList().AsReadOnly()
             ?? throw new ArgumentNullException(nameof(subscriptionHistories));
     }
+
 }
