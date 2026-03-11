@@ -26,7 +26,7 @@ public sealed class SubscriptionAggregateLoader : ISubscriptionAggregateLoader
         _factory = factory;
     }
 
-    public async Task<SubscriptionSubscriptionHistoriesAggregate?> LoadWithSubscriptionHistories(SubscriptionId subscriptionId, CancellationToken ct = default)
+    public async Task<SubscriptionSubscriptionHistoriesAggregate?> LoadWithSubscriptionHistoriesAsync(SubscriptionId subscriptionId, CancellationToken ct = default)
     {
         await using var subscriptionsContext = await _factory.CreateDbContextAsync(ct);
         await using var subscriptionHistoriesContext = await _factory.CreateDbContextAsync(ct);
@@ -40,7 +40,7 @@ public sealed class SubscriptionAggregateLoader : ISubscriptionAggregateLoader
             .Where(sh => EF.Property<Guid>(sh, "SubscriptionId") == subscriptionId.Value)
             .ToListAsync(ct);
 
-        await Task.WhenAll(subscriptionTask, subscriptionHistoriesTask);
+        await Task.WhenAll( subscriptionTask, subscriptionHistoriesTask );
 
         if (subscriptionTask.Result == null)
             return null;

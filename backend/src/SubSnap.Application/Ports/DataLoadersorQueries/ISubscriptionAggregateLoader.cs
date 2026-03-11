@@ -5,5 +5,5 @@ namespace SubSnap.Application.Ports.DataLoadersorQueries;
 
 public interface ISubscriptionAggregateLoader
 {
-    Task<SubscriptionSubscriptionHistoriesAggregate> LoadWithSubscriptionHistories(SubscriptionId subscriptionId, CancellationToken ct);
+    Task<SubscriptionSubscriptionHistoriesAggregate?> LoadWithSubscriptionHistoriesAsync(SubscriptionId subscriptionId, CancellationToken ct = default);
 }

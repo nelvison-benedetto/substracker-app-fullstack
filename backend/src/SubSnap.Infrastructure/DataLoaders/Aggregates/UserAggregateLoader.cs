@@ -26,7 +26,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         _factory = factory;
     }
 
-    public async Task<UserFullAggregate?> LoadWithFull(UserId userId, CancellationToken ct = default)
+    public async Task<UserFullAggregate?> LoadWithFullAsync(UserId userId, CancellationToken ct = default)
     {
         await using var userContext = await _factory.CreateDbContextAsync(ct);
         await using var refreshContext = await _factory.CreateDbContextAsync(ct);
@@ -63,7 +63,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         );  //costruzione aggregate, e lo restituisco!(questo obj non esiste nel db, è un runtime business projection)
     }
 
-    public async Task<UserSharedLinksAggregate?> LoadWithSharedLinks(UserId userId, CancellationToken ct)
+    public async Task<UserSharedLinksAggregate?> LoadWithSharedLinksAsync(UserId userId, CancellationToken ct = default)
     {
         await using var userContext = await _factory.CreateDbContextAsync(ct);
         await using var linkContext = await _factory.CreateDbContextAsync(ct);
@@ -77,7 +77,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
             .Where(sl => EF.Property<Guid>(sl, "UserId") == userId.Value)
             .ToListAsync(ct);
 
-        await Task.WhenAll(sharedLinksTask);
+        await Task.WhenAll( userTask, sharedLinksTask );
 
         if (userTask.Result == null)
             return null;
@@ -91,7 +91,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
 
 
     //wrong!! 2 agggregate roots!! TO DELETE!!
-    public async Task<UserSubscriptionsAggregate?> LoadWithSubscriptions( UserId userId, CancellationToken ct = default)
+    public async Task<UserSubscriptionsAggregate?> LoadWithSubscriptionsAsync( UserId userId, CancellationToken ct = default)
     {
         await using var context = await _factory.CreateDbContextAsync(ct); 
         var user = await context.Users

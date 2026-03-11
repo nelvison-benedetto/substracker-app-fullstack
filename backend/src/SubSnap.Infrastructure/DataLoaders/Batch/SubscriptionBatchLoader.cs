@@ -71,12 +71,12 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
         var tcs = _pending.GetOrAdd( key, _ => new TaskCompletionSource<IReadOnlyList<Subscription>>(TaskCreationOptions.RunContinuationsAsynchronously));
         //dice 'se già qualcuno ha chiesto questo user → riusa promessa, altrimenti creala.'
 
-        ScheduleExecution();  //serve ad evitare 100 req -> 100 query
+        ScheduleExecution(ct);  //serve ad evitare 100 req -> 100 query
 
         return tcs.Task;
     }
 
-    private void ScheduleExecution()
+    private void ScheduleExecution(CancellationToken ct)
     {
         lock (_lock)
         {
@@ -85,10 +85,10 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
         }
         //garantisce solo 1 batch running attivo!!
 
-        _ = Task.Run(ExecuteBatch);  //parte in background
+        _ = Task.Run(ExecuteBatch(ct));  //parte in background
     }
     
-    private async Task ExecuteBatch()
+    private async Task ExecuteBatch(CancellationToken ct)
     {
         await Task.Delay(5); //aspetti 5ms, perche serve un po di tempo x raccogliere le req simultanee. e.g. t=0ms user1 t=1ms user2 t=3ms user3...
 
@@ -96,7 +96,7 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
         var ids = snapshot.Select(x => x.Key).ToList();  //ora hai e.g. [user1, user2, user3]
 
         await using var db =
-            await _factory.CreateDbContextAsync();
+            await _factory.CreateDbContextAsync(ct);
 
         //OLD before logging x batch loader
         //var subs = await db.Set<Subscription>()
@@ -154,7 +154,6 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
             {
                 grouped.TryGetValue(id, out var result);
                 tcs.TrySetResult(result ?? new List<Subscription>());
-                //
                 _pending.TryRemove(id, out _);
             }
         }
