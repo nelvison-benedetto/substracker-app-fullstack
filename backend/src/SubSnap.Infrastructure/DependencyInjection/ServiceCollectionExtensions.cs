@@ -7,6 +7,7 @@ using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Application.Ports.Persistence;
 using SubSnap.Application.Ports.Storage;
 using SubSnap.Infrastructure.Background;
+using SubSnap.Infrastructure.Caching;
 using SubSnap.Infrastructure.DataLoaders.Aggregates;
 using SubSnap.Infrastructure.DataLoaders.Batch;
 using SubSnap.Infrastructure.External.Storage;
@@ -71,7 +72,7 @@ public static class ServiceCollectionExtensions
 
         //services.AddScoped<IEventDispatcher, MediatREventDispatcher>(); //ora uso outboxprocessor x dispatcher outbox pattern.
 
-
+        services.AddScoped<QueryCache>();
         //x Loaders & Bathchers, x Projections non necessario xk è interno.
         services.AddScoped<IUserAggregateLoader, UserAggregateLoader>();
         services.AddScoped<ISubscriptionAggregateLoader, SubscriptionAggregateLoader>();

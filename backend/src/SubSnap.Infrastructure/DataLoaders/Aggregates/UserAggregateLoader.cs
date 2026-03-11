@@ -3,6 +3,7 @@ using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Core.Domain.Aggregates;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.ValueObjects;
+using SubSnap.Infrastructure.Caching;
 using SubSnap.Infrastructure.Persistence.Context;
 
 namespace SubSnap.Infrastructure.DataLoaders.Aggregates;
@@ -19,15 +20,27 @@ see  getuserswithsubscriptionshandler.cs  useraggregateloader.cs  subscriptionba
 public sealed class UserAggregateLoader : IUserAggregateLoader
 {
     private readonly IDbContextFactory<ApplicationDbContext> _factory; //x .WhenAll() cioe query in parallelo
+    private readonly QueryCache _cache;
 
     public UserAggregateLoader(
-        IDbContextFactory<ApplicationDbContext> factory)
+        IDbContextFactory<ApplicationDbContext> factory,
+        QueryCache cache
+    )
     {
         _factory = factory;
+        _cache = cache;
     }
 
-    public async Task<UserFullAggregate?> LoadWithFullAsync(UserId userId, CancellationToken ct = default)
+    public async Task<UserFullAggregate?> LoadWithFullAsync(
+        UserId userId, 
+        CancellationToken ct = default
+    )
     {
+        var cacheKey = $"user-full:{userId.Value}";
+
+        if (_cache.TryGet<UserFullAggregate>(cacheKey, out var cached))
+            return cached;
+
         await using var userContext = await _factory.CreateDbContextAsync(ct);
         await using var refreshContext = await _factory.CreateDbContextAsync(ct);
         await using var linkContext = await _factory.CreateDbContextAsync(ct);
@@ -56,11 +69,15 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         if (userTask.Result == null)
             return null;
 
-        return new UserFullAggregate(
+        var aggregate = new UserFullAggregate(
             userTask.Result,
             refreshTokensTask.Result,
             sharedLinksTask.Result
         );  //costruzione aggregate, e lo restituisco!(questo obj non esiste nel db, è un runtime business projection)
+
+        _cache.Set(cacheKey, aggregate);
+
+        return aggregate;
     }
 
     public async Task<UserSharedLinksAggregate?> LoadWithSharedLinksAsync(UserId userId, CancellationToken ct = default)
@@ -88,35 +105,4 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         );
     }
 
-
-
-    //wrong!! 2 agggregate roots!! TO DELETE!!
-    public async Task<UserSubscriptionsAggregate?> LoadWithSubscriptionsAsync( UserId userId, CancellationToken ct = default)
-    {
-        await using var context = await _factory.CreateDbContextAsync(ct); 
-        var user = await context.Users
-            .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == userId, ct);
-        if (user is null)
-            return null;
-        //parallel load dei childrens target
-        var subscriptionsTask = LoadSubscriptions(userId, ct); //return la lista di Subscription!
-        await Task.WhenAll( subscriptionsTask);  //run queries in parallelo!!
-        return new UserSubscriptionsAggregate( user, subscriptionsTask.Result);
-    }
-    //---- Helpers ----
-    private async Task<List<Subscription>> LoadSubscriptions( UserId userId, CancellationToken ct)
-    {
-        await using var context =
-            await _factory.CreateDbContextAsync(ct);
-
-        return await context.Set<Subscription>()
-            .AsNoTracking()
-            .Where(s =>
-                EF.Property<Guid>(s, "UserId") == userId.Value)
-            .ToListAsync(ct);
-    }
-
-
-    
 }
